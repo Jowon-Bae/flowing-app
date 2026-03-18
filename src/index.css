@@ -1,0 +1,189 @@
+:root {
+  /* Mosaic Covenant Church Inspired Palette */
+  --primary-color: #E74C3C; /* Cinnabar Red - Vibrant and passionate */
+  --primary-dark: #C0392B;
+  --secondary-color: #2C8C99; /* African Turquoise - Fresh contrast */
+  --bg-color: #FAFAFA; /* Off white for high contrast */
+  --surface-color: #FFFFFF;
+  --text-primary: #121212; /* Almost black for harsh, bold typography */
+  --text-secondary: #6B7280;
+  --border-radius-xl: 32px;
+  --border-radius-lg: 24px;
+  --border-radius-md: 16px;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 12px 32px rgba(231, 76, 60, 0.08); /* Tinted shadow */
+  --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.12);
+  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', 'Pretendard', -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+/* App Container */
+.app-container {
+  max-width: 480px; 
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: 90px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.03);
+}
+
+/* Typography Classes */
+.heading-jumbo {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.heading-card {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.text-accent {
+  color: var(--primary-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+}
+
+/* Mosaic Style Card */
+.mosaic-card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+  margin-bottom: 20px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+/* Gradient line on top of card for mosaic artistic feel */
+.mosaic-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  opacity: 0;
+  transition: var(--transition-smooth);
+}
+
+.mosaic-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: var(--shadow-md);
+}
+
+.mosaic-card:hover::before {
+  opacity: 1;
+}
+
+/* Buttons */
+.btn-mosaic {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--border-radius-xl);
+  padding: 18px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  width: 100%;
+  transition: var(--transition-smooth);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+}
+
+.btn-mosaic:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(231, 76, 60, 0.4);
+}
+
+.btn-mosaic:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn-mosaic.completed {
+  background: linear-gradient(135deg, #2C8C99, #1D6670); /* Turquoise for success */
+  box-shadow: 0 8px 20px rgba(44, 140, 153, 0.3);
+}
+
+/* Bottom Tab Navigation - Floating Style */
+.bottom-tab-nav {
+  position: fixed;
+  bottom: 0;
+  max-width: 480px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: space-around;
+  padding: 16px 0 28px 0;
+  box-shadow: 0 -10px 30px rgba(0,0,0,0.04);
+  border-top: 1px solid rgba(0,0,0,0.05);
+  z-index: 100;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #9CA3AF;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  font-size: 11px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.tab-item.active {
+  color: var(--primary-color);
+  transform: translateY(-3px);
+}
+
+/* Hero Section Image Overlay Style */
+.hero-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8));
+  z-index: 1;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
