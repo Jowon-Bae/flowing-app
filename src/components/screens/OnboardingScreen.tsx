@@ -9,19 +9,19 @@ interface OnboardingScreenProps {
 const slides = [
   {
     id: 1,
-    image: '/onboarding_1.png',
+    image: `${import.meta.env.BASE_URL}onboarding_1.png`,
     title: 'Go! or Send!',
     description: '보내는 선교사, 당신의 또 다른 이름입니다.'
   },
   {
     id: 2,
-    image: '/onboarding_2.png',
+    image: `${import.meta.env.BASE_URL}onboarding_2.png`,
     title: '당신의 마음이 흐를 때,\n필리핀에 희망이 피어납니다',
     description: '멈춰있던 곳에 사랑이 흐르도록 당신의 마음을 보태주세요. 보내는 선교사인 당신의 정성은 필리핀 땅의 메마른 곳을 적시는 가장 귀한 물줄기가 됩니다.'
   },
   {
     id: 3,
-    image: '/onboarding_3.png',
+    image: `${import.meta.env.BASE_URL}onboarding_3.png`,
     title: '기도로 함께하는 아웃리치',
     description: '현장의 긴급한 기도 제목을 확인하고 \'기도하기\' 버튼으로 영적인 힘을 보태주세요. 우리는 하나입니다.'
   }

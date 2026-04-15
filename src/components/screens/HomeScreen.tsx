@@ -30,7 +30,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin }) => {
       {/* Banner Section */}
       <div className="relative h-72 w-full">
         <img 
-          src="/main_banner.png" 
+          src={`${import.meta.env.BASE_URL}main_banner.png`} 
           alt="Children smiling" 
           className="w-full h-full object-cover rounded-b-[40px] shadow-sm"
         />

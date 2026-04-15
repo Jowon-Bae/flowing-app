@@ -7,31 +7,31 @@ const givingItems = [
     id: 'meals',
     title: '마을 어린이 급식 600인분',
     desc: '영양가 있는 따뜻한 밥 한 끼가 아이들에게는 사랑의 증거가 됩니다.',
-    image: '/item_meals.png'
+    image: `${import.meta.env.BASE_URL}item_meals.png`
   },
   {
     id: 'basketball',
     title: '농구공 선물 20개',
     desc: '스포츠를 통해 아이들의 굳은 마음을 열고, 건강한 교제를 나눕니다.',
-    image: '/item_basketball.png'
+    image: `${import.meta.env.BASE_URL}item_basketball.png`
   },
   {
     id: 'supplies',
     title: '차세대 활동 물품',
     desc: '그림 도구, 시트 등 다양한 활동 물품으로 아이들의 꿈을 칠해줍니다.',
-    image: '/item_supplies.png'
+    image: `${import.meta.env.BASE_URL}item_supplies.png`
   },
   {
     id: 'blessing',
     title: '선교사님 블레싱',
     desc: '척박한 환경에서 묵묵히 헌신하시는 현지 선교사님 가정을 힘껏 위로합니다.',
-    image: '/item_blessing.png'
+    image: `${import.meta.env.BASE_URL}item_blessing.png`
   },
   {
     id: 'healing',
     title: '현지 청년들을 위한 힐링캠프',
     desc: '필리핀의 미래를 책임질 청년들이 영적으로 회복되는 1박 2일 캠프를 지원합니다.',
-    image: '/item_healing.png'
+    image: `${import.meta.env.BASE_URL}item_healing.png`
   }
 ];
 

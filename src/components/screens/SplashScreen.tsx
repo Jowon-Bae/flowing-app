@@ -17,7 +17,7 @@ const SplashScreen: React.FC = () => {
           className="w-16 h-16 mb-8 relative"
         >
           <img 
-            src="/load_logo_black.png" 
+            src={`${import.meta.env.BASE_URL}load_logo_black.png`} 
             alt="Seoul Dream Church" 
             className="w-full h-full object-contain drop-shadow-sm"
           />
