@@ -98,7 +98,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ item, onClose }) => {
         </div>
 
         {/* Account Info Card — Modern Dark Design */}
-        <div className="rounded-2xl mb-5 overflow-hidden" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%)' }}>
+        <div className="rounded-2xl mb-5 overflow-hidden" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%)', fontFamily: "'Pretendard', sans-serif" }}>
           {/* Bank Label Row */}
           <div className="flex items-center gap-2.5 px-5 pt-5 pb-3">
             <div className="w-7 h-7 bg-white/10 rounded-full flex items-center justify-center">
@@ -113,29 +113,26 @@ const DonationModal: React.FC<DonationModalProps> = ({ item, onClose }) => {
           {/* Separator */}
           <div className="mx-5 h-px bg-white/10" />
 
-          {/* Account Number + Copy Button Row */}
-          <div className="flex items-center justify-between px-5 py-4">
-            <span className="text-[22px] font-bold tracking-widest text-white leading-none">
+          {/* Account Number — Single Line */}
+          <div className="px-5 pt-4 pb-3">
+            <p className="text-[20px] font-bold tracking-[0.12em] text-white whitespace-nowrap">
               {ACCOUNT.number}
-            </span>
+            </p>
+          </div>
+
+          {/* Copy Button — Below Account Number */}
+          <div className="px-5 pb-5">
             <button
               onClick={handleCopy}
-              className={`ml-3 shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 ${
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all active:scale-95 ${
                 copied
-                  ? 'bg-primary-500 text-white shadow-[0_0_12px_rgba(22,163,74,0.5)]'
+                  ? 'bg-primary-500 text-white shadow-[0_0_16px_rgba(34,197,94,0.4)]'
                   : 'bg-white/15 text-white hover:bg-white/25'
               }`}
             >
-              {copied ? <Check size={13} /> : <Copy size={13} />}
-              {copied ? '복사됨' : '복사'}
+              {copied ? <Check size={15} /> : <Copy size={15} />}
+              {copied ? '복사 완료!' : '계좌번호 복사'}
             </button>
-          </div>
-
-          {/* Bottom hint */}
-          <div className="px-5 pb-4">
-            <p className="text-[11px] text-white/35 text-center">
-              이체 후 '함께 기도합니다' 버튼으로 동참을 알려주세요 🙏
-            </p>
           </div>
         </div>
 
