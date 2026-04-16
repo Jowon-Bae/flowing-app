@@ -1,6 +1,12 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Heart, ShieldCheck, PieChart } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Heart, ShieldCheck, PieChart, X, Copy, Check, ExternalLink, Building2 } from 'lucide-react';
+
+const ACCOUNT = {
+  bank: '하나은행',
+  number: '247-910008-73704',
+  holder: '해외아웃리치 4',
+};
 
 const givingItems = [
   {
@@ -35,7 +41,126 @@ const givingItems = [
   }
 ];
 
+interface DonationModalProps {
+  item: typeof givingItems[0];
+  onClose: () => void;
+}
+
+const DonationModal: React.FC<DonationModalProps> = ({ item, onClose }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(ACCOUNT.number).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const handleToss = () => {
+    // Toss deep link for sending money
+    const tossUrl = `supertoss://send?bank=${encodeURIComponent(ACCOUNT.bank)}&accountNo=${ACCOUNT.number.replace(/-/g, '')}&origin=qr`;
+    window.location.href = tossUrl;
+    // Fallback to Toss web after short delay
+    setTimeout(() => {
+      window.open('https://toss.im', '_blank');
+    }, 1500);
+  };
+
+  const handleKakaoPay = () => {
+    window.open('https://kakaopay.com', '_blank');
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex flex-col justify-end bg-black/50"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        exit={{ y: '100%' }}
+        transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+        className="bg-white rounded-t-[32px] p-6 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <p className="text-xs text-primary-600 font-bold uppercase tracking-widest mb-1">후원 항목</p>
+            <h3 className="text-lg font-bold text-gray-900 leading-tight">{item.title}</h3>
+          </div>
+          <button onClick={onClose} className="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 transition">
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Account Info Card */}
+        <div className="bg-gray-50 rounded-2xl p-5 mb-5 border border-gray-100">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+              <Building2 size={16} className="text-primary-600" />
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 font-medium">입금 은행</p>
+              <p className="text-sm font-bold text-gray-900">{ACCOUNT.bank} · 예금주: {ACCOUNT.holder}</p>
+            </div>
+          </div>
+
+          {/* Account Number */}
+          <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-gray-200">
+            <span className="text-xl font-bold tracking-wider text-gray-900">{ACCOUNT.number}</span>
+            <button
+              onClick={handleCopy}
+              className={`flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-lg transition-all ${
+                copied
+                  ? 'bg-primary-500 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {copied ? <Check size={14} /> : <Copy size={14} />}
+              {copied ? '복사됨!' : '복사'}
+            </button>
+          </div>
+          <p className="text-xs text-gray-400 mt-2 text-center">
+            위 계좌번호로 이체 후 아멘 버튼을 눌러 동참을 알려주세요 🙏
+          </p>
+        </div>
+
+        {/* Quick Transfer Buttons */}
+        <p className="text-xs text-gray-400 font-medium text-center mb-3">송금 앱으로 바로 이동</p>
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <button
+            onClick={handleToss}
+            className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm text-white transition active:scale-95"
+            style={{ background: 'linear-gradient(135deg, #0064FF, #0052CC)' }}
+          >
+            <ExternalLink size={15} />
+            토스(Toss)
+          </button>
+          <button
+            onClick={handleKakaoPay}
+            className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition active:scale-95"
+            style={{ background: '#FEE500', color: '#3C1E1E' }}
+          >
+            <ExternalLink size={15} />
+            카카오페이
+          </button>
+        </div>
+
+        <p className="text-[11px] text-gray-300 text-center">
+          앱이 설치되어 있지 않으면 웹페이지로 이동합니다
+        </p>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const GivingScreen: React.FC = () => {
+  const [selectedItem, setSelectedItem] = useState<typeof givingItems[0] | null>(null);
+
   return (
     <motion.div 
       initial={{ opacity: 0, x: 20 }}
@@ -64,7 +189,6 @@ const GivingScreen: React.FC = () => {
           <p className="text-xs text-primary-600 font-medium mt-2">목표액 1,000만원 중 85% 달성</p>
         </div>
 
-        {/* Chart Visualization (Mock) */}
         <div className="space-y-4">
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
@@ -89,7 +213,6 @@ const GivingScreen: React.FC = () => {
           </div>
         </div>
         
-        {/* Simple Progress Bar inline for chart */}
         <div className="h-2 w-full flex rounded-full overflow-hidden mt-6 bg-gray-100">
           <div className="h-full bg-primary-500" style={{ width: '45%' }}></div>
           <div className="h-full bg-blue-400" style={{ width: '30%' }}></div>
@@ -144,9 +267,10 @@ const GivingScreen: React.FC = () => {
               </div>
               
               <button
-                className="w-full bg-primary-50 text-primary-600 rounded-xl py-3.5 font-bold text-sm flex items-center justify-center transition-colors hover:bg-primary-100 hover:text-primary-700 group"
+                onClick={() => setSelectedItem(item)}
+                className="w-full bg-primary-600 text-white rounded-xl py-3.5 font-bold text-sm flex items-center justify-center gap-2 transition active:scale-95 shadow-[0_4px_12px_rgba(22,163,74,0.3)]"
               >
-                <Heart size={16} className="mr-2 group-hover:fill-primary-200 transition-colors" />
+                <Heart size={16} className="fill-white/30" />
                 사랑 흘려보내기
               </button>
             </div>
@@ -154,6 +278,12 @@ const GivingScreen: React.FC = () => {
         ))}
       </div>
 
+      {/* Donation Modal */}
+      <AnimatePresence>
+        {selectedItem && (
+          <DonationModal item={selectedItem} onClose={() => setSelectedItem(null)} />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
