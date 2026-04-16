@@ -38,9 +38,9 @@ function App() {
 
   return (
     <PrayerProvider>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-8">
-      {/* Mobile Device Mockup Container */}
-      <div className="w-full max-w-[400px] h-[850px] max-h-[100dvh] bg-white rounded-[40px] shadow-2xl overflow-hidden relative border-8 border-gray-900 mx-auto flex flex-col">
+      <div className="min-h-[100dvh] bg-gray-50 flex justify-center">
+      {/* Full Screen Mobile Container */}
+      <div className="w-full max-w-[480px] min-h-[100dvh] bg-white overflow-hidden relative flex flex-col shadow-sm">
         
         <AnimatePresence mode="wait">
           {loading ? (
