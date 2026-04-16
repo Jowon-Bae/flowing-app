@@ -97,36 +97,46 @@ const DonationModal: React.FC<DonationModalProps> = ({ item, onClose }) => {
           </button>
         </div>
 
-        {/* Account Info Card */}
-        <div className="bg-gray-50 rounded-2xl p-5 mb-5 border border-gray-100">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-              <Building2 size={16} className="text-primary-600" />
+        {/* Account Info Card — Modern Dark Design */}
+        <div className="rounded-2xl mb-5 overflow-hidden" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%)' }}>
+          {/* Bank Label Row */}
+          <div className="flex items-center gap-2.5 px-5 pt-5 pb-3">
+            <div className="w-7 h-7 bg-white/10 rounded-full flex items-center justify-center">
+              <Building2 size={14} className="text-white/80" />
             </div>
             <div>
-              <p className="text-xs text-gray-400 font-medium">입금 은행</p>
-              <p className="text-sm font-bold text-gray-900">{ACCOUNT.bank} · 예금주: {ACCOUNT.holder}</p>
+              <p className="text-[10px] text-white/40 font-medium uppercase tracking-widest">입금 계좌</p>
+              <p className="text-xs font-semibold text-white/80">{ACCOUNT.bank} · 예금주: {ACCOUNT.holder}</p>
             </div>
           </div>
 
-          {/* Account Number */}
-          <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-gray-200">
-            <span className="text-xl font-bold tracking-wider text-gray-900">{ACCOUNT.number}</span>
+          {/* Separator */}
+          <div className="mx-5 h-px bg-white/10" />
+
+          {/* Account Number + Copy Button Row */}
+          <div className="flex items-center justify-between px-5 py-4">
+            <span className="text-[22px] font-bold tracking-widest text-white leading-none">
+              {ACCOUNT.number}
+            </span>
             <button
               onClick={handleCopy}
-              className={`flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-lg transition-all ${
+              className={`ml-3 shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 ${
                 copied
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-primary-500 text-white shadow-[0_0_12px_rgba(22,163,74,0.5)]'
+                  : 'bg-white/15 text-white hover:bg-white/25'
               }`}
             >
-              {copied ? <Check size={14} /> : <Copy size={14} />}
-              {copied ? '복사됨!' : '복사'}
+              {copied ? <Check size={13} /> : <Copy size={13} />}
+              {copied ? '복사됨' : '복사'}
             </button>
           </div>
-          <p className="text-xs text-gray-400 mt-2 text-center">
-            위 계좌번호로 이체 후 아멘 버튼을 눌러 동참을 알려주세요 🙏
-          </p>
+
+          {/* Bottom hint */}
+          <div className="px-5 pb-4">
+            <p className="text-[11px] text-white/35 text-center">
+              이체 후 '함께 기도합니다' 버튼으로 동참을 알려주세요 🙏
+            </p>
+          </div>
         </div>
 
         {/* Quick Transfer Buttons */}
