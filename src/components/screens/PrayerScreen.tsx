@@ -128,13 +128,20 @@ const PrayerScreen: React.FC = () => {
         </div>
       )}
 
-      {/* Floating Action Button */}
-      <button 
+      {/* Draggable Floating Action Button */}
+      <motion.button
+        drag
+        dragMomentum={false}
+        dragElastic={0.1}
+        whileDrag={{ scale: 1.15, boxShadow: '0 8px 24px rgba(22,163,74,0.5)' }}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-primary-600 text-white rounded-full shadow-[0_4px_12px_rgba(22,163,74,0.4)] flex items-center justify-center hover:bg-primary-700 transition"
+        className="fixed bottom-24 right-6 w-14 h-14 bg-primary-600 text-white rounded-full shadow-[0_4px_12px_rgba(22,163,74,0.4)] flex items-center justify-center z-40 cursor-grab active:cursor-grabbing touch-none"
+        style={{ touchAction: 'none' }}
       >
         <PenLine size={24} />
-      </button>
+      </motion.button>
 
       {/* Write Prayer Modal */}
       <AnimatePresence>
