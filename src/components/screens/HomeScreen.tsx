@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock } from 'lucide-react';
+import { Lock, Volume2, VolumeX } from 'lucide-react';
 
 interface HomeScreenProps {
   onOpenAdmin?: () => void;
@@ -10,6 +10,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin }) => {
   const currentAmount = 850;
   const goalAmount = 1000;
   const progressPercent = Math.min((currentAmount / goalAmount) * 100, 100);
+  const [isMuted, setIsMuted] = useState(true);
 
   const handleAdminLockClick = () => {
     const pwd = window.prompt("관리자 비밀번호를 입력하세요: (힌트: 0000)");
@@ -79,17 +80,23 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin }) => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.08)] bg-black"
+          className="rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.08)] bg-black relative"
         >
           <video
             src={`${import.meta.env.BASE_URL}home_video.mp4`}
             autoPlay
             loop
-            muted
+            muted={isMuted}
             playsInline
             className="w-full object-cover"
             style={{ maxHeight: '240px' }}
           />
+          <button
+            onClick={() => setIsMuted(!isMuted)}
+            className="absolute bottom-3 right-3 p-2.5 rounded-full bg-black/40 backdrop-blur-md text-white/90 hover:bg-black/60 transition"
+          >
+            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          </button>
         </motion.section>
 
         {/* Progress Bar Card */}
