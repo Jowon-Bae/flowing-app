@@ -29,6 +29,7 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [isPlayingBgm, setIsPlayingBgm] = useState(false);
+  const audioRef = React.useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -38,12 +39,11 @@ function App() {
   }, []);
 
   const toggleBgm = () => {
-    const audio = document.getElementById('global-bgm') as HTMLAudioElement;
-    if (audio) {
+    if (audioRef.current) {
       if (!isPlayingBgm) {
-        audio.play().catch(e => console.log('BGM Play prevented:', e));
+        audioRef.current.play().catch(e => console.log('BGM Play prevented:', e));
       } else {
-        audio.pause();
+        audioRef.current.pause();
       }
     }
     setIsPlayingBgm(!isPlayingBgm);
@@ -53,9 +53,8 @@ function App() {
     setShowOnboarding(false);
     setIsPlayingBgm(true);
     // iOS Safari requires audio.play() to be triggered synchronously from a user interaction
-    const audio = document.getElementById('global-bgm') as HTMLAudioElement;
-    if (audio) {
-      audio.play().catch(e => console.log('Auto-play prevented:', e));
+    if (audioRef.current) {
+      audioRef.current.play().catch(e => console.log('Auto-play prevented:', e));
     }
   };
 
@@ -63,7 +62,15 @@ function App() {
     <PrayerProvider>
       <div className="min-h-[100dvh] bg-gray-50 flex justify-center">
       {/* Global Audio Element always mounted */}
-      <audio id="global-bgm" src={`${import.meta.env.BASE_URL}always_music.mp3`} loop playsInline />
+      <audio 
+        ref={audioRef}
+        id="global-bgm" 
+        preload="auto" 
+        loop 
+        playsInline
+      >
+        <source src={`${import.meta.env.BASE_URL}always_music.mp3`} type="audio/mpeg" />
+      </audio>
 
       {/* Full Screen Mobile Container */}
       <div className="w-full max-w-[480px] min-h-[100dvh] bg-white overflow-hidden relative flex flex-col shadow-sm">
