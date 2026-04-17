@@ -73,7 +73,7 @@ function App() {
               className="flex-1 flex flex-col h-full relative"
             >
               {/* Global Audio Element */}
-              <audio id="global-bgm" src={`${import.meta.env.BASE_URL}bgm.mp3`} loop />
+              <audio id="global-bgm" src={`${import.meta.env.BASE_URL}always_music.mp3`} loop />
 
               {/* Global BGM Toggle Button */}
               <button 
