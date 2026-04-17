@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Calendar, HeartHandshake, Heart } from 'lucide-react';
+import { Home, Calendar, HeartHandshake, Heart, Music, Music4 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Icons for navigation
@@ -28,6 +28,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('home');
+  const [isPlayingBgm, setIsPlayingBgm] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,6 +36,22 @@ function App() {
     }, 2500); // 2.5 seconds splash screen
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const audio = document.getElementById('global-bgm') as HTMLAudioElement;
+    if (audio) {
+      if (!showOnboarding && isPlayingBgm) {
+        audio.play().catch(e => console.log('BGM Play prevented:', e));
+      } else {
+        audio.pause();
+      }
+    }
+  }, [showOnboarding, isPlayingBgm]);
+
+  const handleFinishOnboarding = () => {
+    setShowOnboarding(false);
+    setIsPlayingBgm(true); // Auto-start music when starting the app
+  };
 
   return (
     <PrayerProvider>
@@ -46,16 +63,27 @@ function App() {
           {loading ? (
             <SplashScreen key="splash" />
           ) : showOnboarding ? (
-            <OnboardingScreen key="onboarding" onFinish={() => setShowOnboarding(false)} />
+            <OnboardingScreen key="onboarding" onFinish={handleFinishOnboarding} />
           ) : (
             <motion.div 
               key="main-app" 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col h-full"
+              className="flex-1 flex flex-col h-full relative"
             >
-              <div className="flex-1 overflow-y-auto w-full no-scrollbar h-full bg-background relative pb-[80px]">
+              {/* Global Audio Element */}
+              <audio id="global-bgm" src={`${import.meta.env.BASE_URL}bgm.mp3`} loop />
+
+              {/* Global BGM Toggle Button */}
+              <button 
+                onClick={() => setIsPlayingBgm(!isPlayingBgm)}
+                className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-white/50 backdrop-blur-md shadow-sm border border-gray-100/50 flex items-center justify-center text-primary-600 transition active:scale-95"
+              >
+                {isPlayingBgm ? <Music size={16} /> : <Music4 size={16} className="opacity-50" />}
+              </button>
+
+              <div className="flex-1 overflow-y-auto w-full no-scrollbar h-full bg-background relative pb-[80px] pt-14">
                 <AnimatePresence mode="wait">
                   {activeTab === 'home' && <HomeScreen key="home" onOpenAdmin={() => setActiveTab('admin')} />}
                   {activeTab === 'schedule' && <ScheduleScreen key="schedule" />}
