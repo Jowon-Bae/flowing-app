@@ -37,25 +37,34 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
+  const toggleBgm = () => {
     const audio = document.getElementById('global-bgm') as HTMLAudioElement;
     if (audio) {
-      if (!showOnboarding && isPlayingBgm) {
+      if (!isPlayingBgm) {
         audio.play().catch(e => console.log('BGM Play prevented:', e));
       } else {
         audio.pause();
       }
     }
-  }, [showOnboarding, isPlayingBgm]);
+    setIsPlayingBgm(!isPlayingBgm);
+  };
 
   const handleFinishOnboarding = () => {
     setShowOnboarding(false);
-    setIsPlayingBgm(true); // Auto-start music when starting the app
+    setIsPlayingBgm(true);
+    // iOS Safari requires audio.play() to be triggered synchronously from a user interaction
+    const audio = document.getElementById('global-bgm') as HTMLAudioElement;
+    if (audio) {
+      audio.play().catch(e => console.log('Auto-play prevented:', e));
+    }
   };
 
   return (
     <PrayerProvider>
       <div className="min-h-[100dvh] bg-gray-50 flex justify-center">
+      {/* Global Audio Element always mounted */}
+      <audio id="global-bgm" src={`${import.meta.env.BASE_URL}always_music.mp3`} loop playsInline />
+
       {/* Full Screen Mobile Container */}
       <div className="w-full max-w-[480px] min-h-[100dvh] bg-white overflow-hidden relative flex flex-col shadow-sm">
         
@@ -72,12 +81,9 @@ function App() {
               exit={{ opacity: 0 }}
               className="flex-1 flex flex-col h-full relative"
             >
-              {/* Global Audio Element */}
-              <audio id="global-bgm" src={`${import.meta.env.BASE_URL}always_music.mp3`} loop />
-
               {/* Global BGM Toggle Button */}
               <button 
-                onClick={() => setIsPlayingBgm(!isPlayingBgm)}
+                onClick={toggleBgm}
                 className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-white/50 backdrop-blur-md shadow-sm border border-gray-100/50 flex items-center justify-center text-primary-600 transition active:scale-95"
               >
                 {isPlayingBgm ? <Music size={16} /> : <Music4 size={16} className="opacity-50" />}
