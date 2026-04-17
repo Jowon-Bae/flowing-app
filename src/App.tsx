@@ -58,6 +58,42 @@ function App() {
     }
   };
 
+  // Swipe Gesture Handling
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
+  const [touchEnd, setTouchEnd] = useState<{ x: number; y: number } | null>(null);
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  };
+
+  const onTouchEndEvent = () => {
+    if (!touchStart || !touchEnd) return;
+    const distanceX = touchStart.x - touchEnd.x;
+    const distanceY = touchStart.y - touchEnd.y;
+
+    if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > minSwipeDistance) {
+      if (activeTab === 'admin') return;
+
+      const currentIndex = tabs.findIndex((t) => t.id === activeTab);
+      if (currentIndex === -1) return;
+
+      if (distanceX > minSwipeDistance && currentIndex < tabs.length - 1) {
+        // Swipe Left -> Next Tab
+        setActiveTab(tabs[currentIndex + 1].id);
+      }
+      if (distanceX < -minSwipeDistance && currentIndex > 0) {
+        // Swipe Right -> Prev Tab
+        setActiveTab(tabs[currentIndex - 1].id);
+      }
+    }
+  };
+
   return (
     <PrayerProvider>
       <div className="min-h-[100dvh] bg-gray-50 flex justify-center">
@@ -96,7 +132,12 @@ function App() {
                 {isPlayingBgm ? <Music size={16} /> : <Music4 size={16} className="opacity-50" />}
               </button>
 
-              <div className="flex-1 overflow-y-auto w-full no-scrollbar h-full bg-background relative pb-[80px] pt-14">
+              <div 
+                className="flex-1 overflow-y-auto w-full no-scrollbar h-full bg-background relative pb-[80px] pt-14"
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEndEvent}
+              >
                 <AnimatePresence mode="wait">
                   {activeTab === 'home' && <HomeScreen key="home" onOpenAdmin={() => setActiveTab('admin')} />}
                   {activeTab === 'schedule' && <ScheduleScreen key="schedule" />}
