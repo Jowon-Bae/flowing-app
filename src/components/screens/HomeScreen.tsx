@@ -74,6 +74,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin }) => {
           </p>
         </section>
 
+        {/* Home Video Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.08)] bg-black"
+        >
+          <video
+            src={`${import.meta.env.BASE_URL}home_video.mp4`}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full object-cover"
+            style={{ maxHeight: '240px' }}
+          />
+        </motion.section>
+
         {/* Progress Bar Card */}
         <motion.section 
           initial={{ opacity: 0, scale: 0.95 }}
