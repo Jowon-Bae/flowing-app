@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Calendar, BookOpen, Newspaper, Heart, Music, Music4 } from 'lucide-react';
+import { Home, Calendar, BookOpen, Newspaper, Heart } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import SplashScreen from './components/screens/SplashScreen';
@@ -28,7 +28,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('home');
-  const [isPlayingBgm, setIsPlayingBgm] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
 
@@ -37,24 +36,24 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  const toggleBgm = () => {
-    if (audioRef.current) {
-      if (!isPlayingBgm) {
-        audioRef.current.play().catch(e => console.log('BGM Play prevented:', e));
-      } else {
-        audioRef.current.pause();
-      }
-    }
-    setIsPlayingBgm(!isPlayingBgm);
-  };
-
   const handleFinishOnboarding = () => {
     setShowOnboarding(false);
-    setIsPlayingBgm(true);
-    if (audioRef.current) {
-      audioRef.current.play().catch(e => console.log('Auto-play prevented:', e));
-    }
   };
+
+  // Auto-switch between BGM and home video based on active tab
+  useEffect(() => {
+    if (showOnboarding) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (activeTab === 'home') {
+      // Home tab: pause BGM so video audio takes over
+      audio.pause();
+    } else {
+      // Other tabs: play BGM
+      audio.play().catch(e => console.log('BGM play error:', e));
+    }
+  }, [activeTab, showOnboarding]);
 
   const handleOpenAdmin = () => {
     setIsAdmin(true);
@@ -119,23 +118,15 @@ function App() {
                   exit={{ opacity: 0 }}
                   className="flex-1 flex flex-col h-full relative"
                 >
-                  {/* BGM Toggle */}
-                  <button
-                    onClick={toggleBgm}
-                    className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-white/50 backdrop-blur-md shadow-sm border border-gray-100/50 flex items-center justify-center text-primary-600 transition active:scale-95"
-                  >
-                    {isPlayingBgm ? <Music size={16} /> : <Music4 size={16} className="opacity-50" />}
-                  </button>
-
                   {/* Content */}
                   <div
-                    className="flex-1 overflow-y-auto w-full no-scrollbar h-full bg-background relative pb-[80px] pt-14"
+                    className="flex-1 overflow-y-auto w-full no-scrollbar h-full bg-background relative pb-[80px]"
                     onTouchStart={onTouchStart}
                     onTouchMove={onTouchMove}
                     onTouchEnd={onTouchEndEvent}
                   >
                     <AnimatePresence mode="wait">
-                      {activeTab === 'home' && <HomeScreen key="home" onOpenAdmin={handleOpenAdmin} />}
+                      {activeTab === 'home' && <HomeScreen key="home" onOpenAdmin={handleOpenAdmin} isActive={activeTab === 'home'} />}
                       {activeTab === 'schedule' && <MinistryScreen key="schedule" />}
                       {activeTab === 'ministry-content' && <MinistryContentScreen key="ministry-content" />}
                       {activeTab === 'news' && <NewsScreen key="news" isAdmin={isAdmin} />}

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Volume2, VolumeX } from 'lucide-react';
+import { Lock } from 'lucide-react';
 
 interface HomeScreenProps {
   onOpenAdmin?: () => void;
+  isActive?: boolean;
 }
 
 const teamMembers = [
@@ -17,8 +18,23 @@ const teamMembers = [
   { name: '미디어팀', role: '촬영 & 기록', emoji: '📷' },
 ];
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin }) => {
-  const [isMuted, setIsMuted] = useState(false);
+const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (isActive) {
+      video.muted = false;
+      video.play().catch(() => {
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+    } else {
+      video.muted = true;
+      video.pause();
+    }
+  }, [isActive]);
 
   const handleAdminLockClick = () => {
     const pwd = window.prompt("관리자 비밀번호를 입력하세요: (힌트: 0000)");
@@ -96,17 +112,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin }) => {
           className="rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.08)] bg-black relative"
         >
           <video
+            ref={videoRef}
             src={`${import.meta.env.BASE_URL}home_video.mp4`}
-            autoPlay loop muted={isMuted} playsInline
+            autoPlay loop muted playsInline
             className="w-full object-cover"
             style={{ maxHeight: '240px' }}
           />
-          <button
-            onClick={() => setIsMuted(!isMuted)}
-            className="absolute bottom-3 right-3 p-2.5 rounded-full bg-black/40 backdrop-blur-md text-white/90 hover:bg-black/60 transition"
-          >
-            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-          </button>
         </motion.section>
 
         {/* Vision Section */}
