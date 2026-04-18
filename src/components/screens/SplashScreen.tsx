@@ -33,7 +33,7 @@ const SplashScreen: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900 leading-tight">
             2026 Philippines Outreach
             <br />
-            <span className="text-primary-600">Flowing with Love</span>
+            <span className="text-primary-600">Go! or Send!</span>
           </h1>
         </motion.div>
       </div>
