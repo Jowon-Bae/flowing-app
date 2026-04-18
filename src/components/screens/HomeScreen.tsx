@@ -62,10 +62,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin }) => {
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-            className="text-white text-3xl font-bold drop-shadow-md leading-tight"
+            className="text-white text-4xl font-bold drop-shadow-md leading-tight mb-1"
           >
-            Flowing <br />with Love
+            The Sender
           </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
+            className="text-white/85 text-base font-medium drop-shadow-md"
+          >
+            당신이 보내는 선교사입니다!
+          </motion.p>
         </div>
       </div>
 

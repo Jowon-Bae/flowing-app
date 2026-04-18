@@ -54,23 +54,18 @@ const BASE = import.meta.env.BASE_URL;
 
 const ministryItems = [
   {
-    id: 'meals', title: '마을 어린이 급식 600인분', image: `${BASE}item_meals.png`,
+    id: 'meals', title: '마을 전도 및 피딩 사역', image: `${BASE}item_meals.png`,
     subtitle: '배고픔이 없는 하루를 선물합니다',
     body: '빠꼬, 오가오, 코곤 마을의 어린이들 600여 명에게 따뜻한 밥 한 끼를 나눕니다. 음식을 나누는 그 짧은 순간이 하나님의 사랑을 먹이는 가장 직접적인 방법입니다.',
     highlights: ['3개 마을 어린이 약 600명 대상', '균형 잡힌 식단 제공', '현지 어머니 봉사단과 함께 직접 조리'],
   },
   {
-    id: 'basketball', title: '농구공 선물 20개', image: `${BASE}item_basketball.png`,
+    id: 'basketball', title: '농구 경기를 통한 교제 및 전도', image: `${BASE}item_basketball.png`,
     subtitle: '공 하나로 열리는 마음의 문',
-    body: '필리핀 아이들에게 농구는 전국민적 스포츠입니다. 농구공 하나가 낯선 선교팀과 아이들 사이의 거리를 단숨에 좁혀 줍니다. 20개의 농구공은 우리가 떠난 뒤에도 오랫동안 아이들과 함께 남을 선물입니다.',
+    body: '필리핀 아이들에게 농구는 전국민적 스포츠입니다. 농구 경기를 함께하며 낯선 선교팀과 아이들 사이의 거리를 단숨에 좁혀, 자연스럽게 복음을 전하는 시간이 됩니다.',
     highlights: ['농구공 20개 현지 마을에 영구 기증', '사역 기간 중 아이들과 농구 대회 진행', '스포츠를 통한 자연스러운 복음 전도'],
   },
-  {
-    id: 'supplies', title: '차세대 활동 물품', image: `${BASE}item_supplies.png`,
-    subtitle: '아이들의 꿈을 위한 물감 한 통',
-    body: '어린이 성경학교(VBS) 프로그램을 위해 크레파스, 물감, 색종이, 공예 재료 등 다양한 활동 물품을 준비합니다. 아이들이 직접 손으로 만들고 색칠하며 말씀을 경험합니다.',
-    highlights: ['크레파스, 물감, 공예 재료 세트 구성', '3개 마을 어린이 성경학교(VBS)에 활용', '남은 물품은 현지 교회 주일학교에 기증'],
-  },
+
   {
     id: 'blessing', title: '선교사님 블레싱', image: `${BASE}item_blessing.png`,
     subtitle: '보내는 자가 드리는 감사의 마음',
