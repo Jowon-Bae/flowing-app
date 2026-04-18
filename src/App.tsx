@@ -38,6 +38,12 @@ function App() {
 
   const handleFinishOnboarding = () => {
     setShowOnboarding(false);
+    // Force audio to start buffering but muted initially on home page
+    const audio = audioRef.current;
+    if (audio) {
+      audio.muted = true;
+      audio.play().catch(e => console.log('Preload play blocked:', e));
+    }
   };
 
   // Auto-switch between BGM and home video based on active tab
@@ -47,10 +53,11 @@ function App() {
     if (!audio) return;
 
     if (activeTab === 'home') {
-      // Home tab: pause BGM so video audio takes over
-      audio.pause();
+      // Home tab: keep audio playing but muted so it's instantly ready
+      audio.muted = true;
     } else {
-      // Other tabs: play BGM
+      // Other tabs: unmute and ensure it's playing
+      audio.muted = false;
       audio.play().catch(e => console.log('BGM play error:', e));
     }
   }, [activeTab, showOnboarding]);
