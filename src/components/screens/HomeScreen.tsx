@@ -78,7 +78,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin }) => {
       <div className="px-6 pt-8 space-y-8 flex-1">
         {/* Welcome Text */}
         <section>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">환영합니다!</h3>
+          <h3
+            className="text-4xl mb-3 text-primary-600"
+            style={{ fontFamily: "'Dancing Script', cursive" }}
+          >
+            Welcome!
+          </h3>
           <p className="text-gray-600 text-[15px] leading-relaxed">
             보내는 선교사로 이 사역을 함께해 주셔서 감사합니다.
             현장의 생생한 소식을 이곳에서 확인하고, 기도로 동역해 주세요.

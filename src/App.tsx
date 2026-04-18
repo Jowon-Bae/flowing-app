@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Home, BookOpen, Newspaper, Heart, Music, Music4 } from 'lucide-react';
+import { Home, Calendar, BookOpen, Newspaper, Heart, Music, Music4 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import SplashScreen from './components/screens/SplashScreen';
 import OnboardingScreen from './components/screens/OnboardingScreen';
 import HomeScreen from './components/screens/HomeScreen';
 import MinistryScreen from './components/screens/MinistryScreen';
+import MinistryContentScreen from './components/screens/MinistryContentScreen';
 import NewsScreen from './components/screens/NewsScreen';
 import PrayerScreen from './components/screens/PrayerScreen';
 import AdminScreen from './components/screens/AdminScreen';
@@ -13,13 +14,14 @@ import AdminScreen from './components/screens/AdminScreen';
 import { PrayerProvider } from './context/PrayerContext';
 import { NewsProvider } from './context/NewsContext';
 
-type Tab = 'home' | 'ministry' | 'news' | 'prayer' | 'admin';
+type Tab = 'home' | 'schedule' | 'ministry-content' | 'news' | 'prayer' | 'admin';
 
 const mainTabs: { id: Tab; label: string; icon: React.FC<any> }[] = [
-  { id: 'home',     label: 'Home',    icon: Home },
-  { id: 'ministry', label: '사역 소개', icon: BookOpen },
-  { id: 'news',     label: '현장 소식', icon: Newspaper },
-  { id: 'prayer',   label: '중보기도', icon: Heart },
+  { id: 'home',             label: 'Home',    icon: Home },
+  { id: 'schedule',         label: '사역 일정', icon: Calendar },
+  { id: 'ministry-content', label: '사역 내용', icon: BookOpen },
+  { id: 'news',             label: '현장 소식', icon: Newspaper },
+  { id: 'prayer',           label: '중보기도', icon: Heart },
 ];
 
 function App() {
@@ -134,7 +136,8 @@ function App() {
                   >
                     <AnimatePresence mode="wait">
                       {activeTab === 'home' && <HomeScreen key="home" onOpenAdmin={handleOpenAdmin} />}
-                      {activeTab === 'ministry' && <MinistryScreen key="ministry" />}
+                      {activeTab === 'schedule' && <MinistryScreen key="schedule" />}
+                      {activeTab === 'ministry-content' && <MinistryContentScreen key="ministry-content" />}
                       {activeTab === 'news' && <NewsScreen key="news" isAdmin={isAdmin} />}
                       {activeTab === 'prayer' && <PrayerScreen key="prayer" />}
                       {activeTab === 'admin' && <AdminScreen key="admin" onClose={handleCloseAdmin} />}
