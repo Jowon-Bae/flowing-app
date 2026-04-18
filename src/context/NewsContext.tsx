@@ -6,11 +6,12 @@ export interface NewsPost {
   content: string;
   time: string;
   emoji: string;
+  image?: string;
 }
 
 interface NewsContextType {
   posts: NewsPost[];
-  addPost: (title: string, content: string, emoji: string) => void;
+  addPost: (title: string, content: string, emoji: string, image?: string) => void;
   deletePost: (id: number) => void;
 }
 
@@ -42,10 +43,10 @@ const defaultPosts: NewsPost[] = [
 export const NewsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [posts, setPosts] = useState<NewsPost[]>(defaultPosts);
 
-  const addPost = (title: string, content: string, emoji: string) => {
+  const addPost = (title: string, content: string, emoji: string, image?: string) => {
     const now = new Date();
     const time = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
-    const newPost: NewsPost = { id: Date.now(), title, content, time, emoji };
+    const newPost: NewsPost = { id: Date.now(), title, content, time, emoji, image };
     setPosts(prev => [newPost, ...prev]);
   };
 
