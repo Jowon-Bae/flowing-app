@@ -1,27 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Calendar, HeartHandshake, Heart, Music, Music4 } from 'lucide-react';
+import { Home, BookOpen, Newspaper, Heart, Music, Music4 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-// Icons for navigation
-
-// Screens
 import SplashScreen from './components/screens/SplashScreen';
 import OnboardingScreen from './components/screens/OnboardingScreen';
 import HomeScreen from './components/screens/HomeScreen';
-import ScheduleScreen from './components/screens/ScheduleScreen';
-import GivingScreen from './components/screens/GivingScreen';
+import MinistryScreen from './components/screens/MinistryScreen';
+import NewsScreen from './components/screens/NewsScreen';
 import PrayerScreen from './components/screens/PrayerScreen';
 import AdminScreen from './components/screens/AdminScreen';
 
 import { PrayerProvider } from './context/PrayerContext';
+import { NewsProvider } from './context/NewsContext';
 
-type Tab = 'home' | 'schedule' | 'giving' | 'prayer' | 'admin';
+type Tab = 'home' | 'ministry' | 'news' | 'prayer' | 'admin';
 
-const tabs: { id: Tab; label: string; icon: React.FC<any> }[] = [
-  { id: 'home', label: 'Home', icon: Home },
-  { id: 'schedule', label: '사역 일정', icon: Calendar },
-  { id: 'giving', label: '후원', icon: HeartHandshake },
-  { id: 'prayer', label: '중보기도', icon: Heart },
+const mainTabs: { id: Tab; label: string; icon: React.FC<any> }[] = [
+  { id: 'home',     label: 'Home',    icon: Home },
+  { id: 'ministry', label: '사역 소개', icon: BookOpen },
+  { id: 'news',     label: '현장 소식', icon: Newspaper },
+  { id: 'prayer',   label: '중보기도', icon: Heart },
 ];
 
 function App() {
@@ -29,12 +27,11 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [isPlayingBgm, setIsPlayingBgm] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2500); // 2.5 seconds splash screen
+    const timer = setTimeout(() => setLoading(false), 2500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -52,10 +49,19 @@ function App() {
   const handleFinishOnboarding = () => {
     setShowOnboarding(false);
     setIsPlayingBgm(true);
-    // iOS Safari requires audio.play() to be triggered synchronously from a user interaction
     if (audioRef.current) {
       audioRef.current.play().catch(e => console.log('Auto-play prevented:', e));
     }
+  };
+
+  const handleOpenAdmin = () => {
+    setIsAdmin(true);
+    setActiveTab('admin');
+  };
+
+  const handleCloseAdmin = () => {
+    setIsAdmin(false);
+    setActiveTab('home');
   };
 
   // Swipe Gesture Handling
@@ -67,121 +73,107 @@ function App() {
     setTouchEnd(null);
     setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
   };
-
   const onTouchMove = (e: React.TouchEvent) => {
     setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
   };
-
   const onTouchEndEvent = () => {
     if (!touchStart || !touchEnd) return;
     const distanceX = touchStart.x - touchEnd.x;
     const distanceY = touchStart.y - touchEnd.y;
-
     if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > minSwipeDistance) {
       if (activeTab === 'admin') return;
-
-      const currentIndex = tabs.findIndex((t) => t.id === activeTab);
+      const currentIndex = mainTabs.findIndex(t => t.id === activeTab);
       if (currentIndex === -1) return;
-
-      if (distanceX > minSwipeDistance && currentIndex < tabs.length - 1) {
-        // Swipe Left -> Next Tab
-        setActiveTab(tabs[currentIndex + 1].id);
+      if (distanceX > minSwipeDistance && currentIndex < mainTabs.length - 1) {
+        setActiveTab(mainTabs[currentIndex + 1].id);
       }
       if (distanceX < -minSwipeDistance && currentIndex > 0) {
-        // Swipe Right -> Prev Tab
-        setActiveTab(tabs[currentIndex - 1].id);
+        setActiveTab(mainTabs[currentIndex - 1].id);
       }
     }
   };
 
   return (
     <PrayerProvider>
-      <div className="min-h-[100dvh] bg-gray-50 flex justify-center">
-      {/* Global Audio Element always mounted */}
-      <audio 
-        ref={audioRef}
-        id="global-bgm" 
-        preload="auto" 
-        loop 
-        playsInline
-      >
-        <source src={`${import.meta.env.BASE_URL}always_music.mp3`} type="audio/mpeg" />
-      </audio>
+      <NewsProvider>
+        <div className="min-h-[100dvh] bg-gray-50 flex justify-center">
+          {/* Global Audio */}
+          <audio ref={audioRef} id="global-bgm" preload="auto" loop playsInline>
+            <source src={`${import.meta.env.BASE_URL}always_music.mp3`} type="audio/mpeg" />
+          </audio>
 
-      {/* Full Screen Mobile Container */}
-      <div className="w-full max-w-[480px] min-h-[100dvh] bg-white overflow-hidden relative flex flex-col shadow-sm">
-        
-        <AnimatePresence mode="wait">
-          {loading ? (
-            <SplashScreen key="splash" />
-          ) : showOnboarding ? (
-            <OnboardingScreen key="onboarding" onFinish={handleFinishOnboarding} />
-          ) : (
-            <motion.div 
-              key="main-app" 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col h-full relative"
-            >
-              {/* Global BGM Toggle Button */}
-              <button 
-                onClick={toggleBgm}
-                className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-white/50 backdrop-blur-md shadow-sm border border-gray-100/50 flex items-center justify-center text-primary-600 transition active:scale-95"
-              >
-                {isPlayingBgm ? <Music size={16} /> : <Music4 size={16} className="opacity-50" />}
-              </button>
+          {/* Full Screen Mobile Container */}
+          <div className="w-full max-w-[480px] min-h-[100dvh] bg-white overflow-hidden relative flex flex-col shadow-sm">
+            <AnimatePresence mode="wait">
+              {loading ? (
+                <SplashScreen key="splash" />
+              ) : showOnboarding ? (
+                <OnboardingScreen key="onboarding" onFinish={handleFinishOnboarding} />
+              ) : (
+                <motion.div
+                  key="main-app"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex-1 flex flex-col h-full relative"
+                >
+                  {/* BGM Toggle */}
+                  <button
+                    onClick={toggleBgm}
+                    className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-white/50 backdrop-blur-md shadow-sm border border-gray-100/50 flex items-center justify-center text-primary-600 transition active:scale-95"
+                  >
+                    {isPlayingBgm ? <Music size={16} /> : <Music4 size={16} className="opacity-50" />}
+                  </button>
 
-              <div 
-                className="flex-1 overflow-y-auto w-full no-scrollbar h-full bg-background relative pb-[80px] pt-14"
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEndEvent}
-              >
-                <AnimatePresence mode="wait">
-                  {activeTab === 'home' && <HomeScreen key="home" onOpenAdmin={() => setActiveTab('admin')} />}
-                  {activeTab === 'schedule' && <ScheduleScreen key="schedule" />}
-                  {activeTab === 'giving' && <GivingScreen key="giving" />}
-                  {activeTab === 'prayer' && <PrayerScreen key="prayer" />}
-                  {activeTab === 'admin' && <AdminScreen key="admin" onClose={() => setActiveTab('home')} />}
-                </AnimatePresence>
-              </div>
+                  {/* Content */}
+                  <div
+                    className="flex-1 overflow-y-auto w-full no-scrollbar h-full bg-background relative pb-[80px] pt-14"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEndEvent}
+                  >
+                    <AnimatePresence mode="wait">
+                      {activeTab === 'home' && <HomeScreen key="home" onOpenAdmin={handleOpenAdmin} />}
+                      {activeTab === 'ministry' && <MinistryScreen key="ministry" />}
+                      {activeTab === 'news' && <NewsScreen key="news" isAdmin={isAdmin} />}
+                      {activeTab === 'prayer' && <PrayerScreen key="prayer" />}
+                      {activeTab === 'admin' && <AdminScreen key="admin" onClose={handleCloseAdmin} />}
+                    </AnimatePresence>
+                  </div>
 
-              {/* Bottom Navigation Navigation */}
-              <div className="absolute bottom-0 left-0 right-0 h-[80px] bg-white border-t border-gray-100 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] flex items-center justify-around px-2 z-50 rounded-b-[32px]">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex flex-col items-center justify-center w-16 h-full transition-colors ${
-                        isActive ? 'text-primary-600' : 'text-gray-400 hover:text-gray-600'
-                      }`}
-                    >
-                      <motion.div
-                        initial={false}
-                        animate={{ 
-                          y: isActive ? -4 : 0,
-                          scale: isActive ? 1.1 : 1 
-                        }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                      >
-                        <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
-                      </motion.div>
-                      <span className={`text-[10px] mt-1 font-medium transition-opacity ${isActive ? 'opacity-100 font-semibold' : 'opacity-70'}`}>
-                        {tab.label}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+                  {/* Bottom Navigation */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[80px] bg-white border-t border-gray-100 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] flex items-center justify-around px-2 z-50 rounded-b-[32px]">
+                    {mainTabs.map((tab) => {
+                      const Icon = tab.icon;
+                      const isActive = activeTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setActiveTab(tab.id)}
+                          className={`flex flex-col items-center justify-center w-16 h-full transition-colors ${
+                            isActive ? 'text-primary-600' : 'text-gray-400 hover:text-gray-600'
+                          }`}
+                        >
+                          <motion.div
+                            initial={false}
+                            animate={{ y: isActive ? -4 : 0, scale: isActive ? 1.1 : 1 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                          >
+                            <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+                          </motion.div>
+                          <span className={`text-[10px] mt-1 font-medium transition-opacity ${isActive ? 'opacity-100 font-semibold' : 'opacity-70'}`}>
+                            {tab.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </NewsProvider>
     </PrayerProvider>
   );
 }
