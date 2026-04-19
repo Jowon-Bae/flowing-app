@@ -83,21 +83,25 @@ const PrayerScreen: React.FC = () => {
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = React.useRef<HTMLDivElement>(null);
+  const authorRef = React.useRef<HTMLDivElement>(null);
+  const contentRef = React.useRef<HTMLDivElement>(null);
 
   const scrollToInput = () => {
-    // Wait for iOS keyboard to fully appear, then scroll
     setTimeout(() => {
       formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 400);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (!author.trim() || !content.trim()) return;
     setIsSubmitting(true);
     addPrayer(author, content);
     setAuthor('');
     setContent('');
+    if (authorRef.current) authorRef.current.textContent = '';
+    if (contentRef.current) contentRef.current.textContent = '';
+    // Blur to dismiss keyboard
+    (document.activeElement as HTMLElement)?.blur();
     setTimeout(() => setIsSubmitting(false), 400);
   };
 
@@ -124,26 +128,30 @@ const PrayerScreen: React.FC = () => {
           <span className="w-6 h-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs">🙏</span>
           기도 제목 남기기
         </p>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            placeholder="이름 (닉네임)"
+        <div className="space-y-3">
+          <div
+            ref={authorRef}
+            contentEditable
+            suppressContentEditableWarning
+            onInput={(e) => setAuthor((e.target as HTMLDivElement).textContent || '')}
             onFocus={scrollToInput}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition"
+            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); contentRef.current?.focus(); } }}
+            data-placeholder="이름 (닉네임)"
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition empty:before:content-[attr(data-placeholder)] empty:before:text-gray-400"
           />
           <div className="relative">
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="기도 제목이나 응원의 메시지를 자유롭게 남겨주세요."
-              rows={2}
+            <div
+              ref={contentRef}
+              contentEditable
+              suppressContentEditableWarning
+              onInput={(e) => setContent((e.target as HTMLDivElement).textContent || '')}
               onFocus={scrollToInput}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-14 text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition resize-none"
+              data-placeholder="기도 제목이나 응원의 메시지를 자유롭게 남겨주세요."
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-14 text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition min-h-[56px] empty:before:content-[attr(data-placeholder)] empty:before:text-gray-400"
             />
             <motion.button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               disabled={!author.trim() || !content.trim()}
               whileTap={{ scale: 0.9 }}
               animate={isSubmitting ? { scale: [1, 1.2, 1] } : {}}
@@ -152,7 +160,7 @@ const PrayerScreen: React.FC = () => {
               <Send size={15} />
             </motion.button>
           </div>
-        </form>
+        </div>
       </motion.div>
 
       {/* ── Prayer List ── */}
