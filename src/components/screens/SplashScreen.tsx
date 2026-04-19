@@ -31,7 +31,7 @@ const SplashScreen: React.FC = () => {
         >
           <h2 className="text-gray-400 text-sm tracking-widest uppercase mb-2 font-medium">Seoul Dream Church</h2>
           <h1 className="text-2xl font-bold text-gray-900 leading-tight">
-            2026 필리핀 아웃리치
+            2026 Philippines Outreach
             <br />
             <span className="text-primary-600">Go! or Send!</span>
           </h1>
