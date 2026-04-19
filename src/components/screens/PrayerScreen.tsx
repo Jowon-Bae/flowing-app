@@ -121,6 +121,7 @@ const PrayerScreen: React.FC = () => {
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="이름 (닉네임)"
+            onFocus={(e) => setTimeout(() => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300)}
             className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition"
           />
           <div className="relative">
@@ -128,7 +129,8 @@ const PrayerScreen: React.FC = () => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="기도 제목이나 응원의 메시지를 자유롭게 남겨주세요."
-              rows={3}
+              rows={2}
+              onFocus={(e) => setTimeout(() => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300)}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-14 text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition resize-none"
             />
             <motion.button
