@@ -7,17 +7,6 @@ interface HomeScreenProps {
   isActive?: boolean;
 }
 
-const teamMembers = [
-  { name: '팀장', role: '인솔 및 전체 리더십', emoji: '👑' },
-  { name: '부팀장', role: '사역 코디네이션', emoji: '🌟' },
-  { name: '총무', role: '재정 및 행정', emoji: '📋' },
-  { name: '찬양팀', role: '워십 리딩', emoji: '🎵' },
-  { name: '어린이팀', role: 'VBS & 어린이 사역', emoji: '🎨' },
-  { name: '청년팀', role: '청년 사역 & 힐링캠프', emoji: '🔥' },
-  { name: '의료팀', role: '의료 봉사', emoji: '🏥' },
-  { name: '미디어팀', role: '촬영 & 기록', emoji: '📷' },
-];
-
 const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -134,28 +123,30 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
 
         {/* Team Introduction */}
         <section>
-          <h3 className="text-lg font-bold text-gray-900 mb-1">함께 가는 팀</h3>
-          <p className="text-gray-400 text-xs mb-4">2026 필리핀 아웃리치 팀원을 소개합니다</p>
-          <div className="grid grid-cols-2 gap-3">
-            {teamMembers.map((member, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 * index }}
-                className="bg-white rounded-2xl p-4 shadow-[0_2px_10px_rgba(0,0,0,0.04)] border border-gray-50 flex items-start gap-3"
-              >
-                <div className="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center text-lg shrink-0">
-                  {member.emoji}
-                </div>
-                <div>
-                  <p className="font-bold text-gray-900 text-sm">{member.name}</p>
-                  <p className="text-[11px] text-gray-400 leading-snug mt-0.5">{member.role}</p>
-                </div>
-              </motion.div>
-            ))}
+          <h3 className="text-lg font-bold text-gray-900 mb-1">팀 멤버</h3>
+          <p className="text-gray-400 text-xs mb-4">팀원 모집중</p>
+          
+          <div className="bg-white rounded-2xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.04)] border border-gray-50 flex flex-col items-center justify-center text-center">
+            <div className="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-2xl mb-3">
+              🙋🏻‍♀️
+            </div>
+            <h4 className="font-bold text-gray-900 text-base mb-1">
+              아웃리치 팀원 모집
+            </h4>
+            <p className="text-sm text-gray-500 mb-5 leading-relaxed">
+              함께 필리핀 땅에 사랑을 전할 보내는 선교사님들, <br/>그리고 현지 사역에 동참하실 여러분을 기다립니다.
+            </p>
+            
+            <a 
+              href="https://forms.gle/5PCea7MyB6i5jbEk7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition active:scale-95 flex items-center justify-center gap-2"
+            >
+              아웃리치 신청 링크
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </a>
           </div>
-          <p className="text-center text-xs text-gray-300 mt-3">총 XX명의 팀원이 함께 합니다</p>
         </section>
       </div>
     </motion.div>
