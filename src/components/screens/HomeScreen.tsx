@@ -134,7 +134,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
               아웃리치 팀원 모집
             </h4>
             <p className="text-sm text-gray-500 mb-5 leading-relaxed">
-              함께 필리핀 땅에 사랑을 전할 보내는 선교사님들, <br/>그리고 현지 사역에 동참하실 여러분을 기다립니다.
+              함께 필리핀 땅에 사랑을 전할 팀 멤버를 모집합니다!
             </p>
             
             <a 
