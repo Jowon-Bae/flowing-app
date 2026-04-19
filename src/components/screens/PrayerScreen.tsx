@@ -82,6 +82,14 @@ const PrayerScreen: React.FC = () => {
   const [author, setAuthor] = useState('');
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = React.useRef<HTMLDivElement>(null);
+
+  const scrollToInput = () => {
+    // Wait for iOS keyboard to fully appear, then scroll
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,7 +106,7 @@ const PrayerScreen: React.FC = () => {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="p-6 pb-12 bg-gray-50/50 min-h-full"
+      className="p-6 pb-[300px] bg-gray-50/50 min-h-full"
     >
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">중보기도</h2>
@@ -107,6 +115,7 @@ const PrayerScreen: React.FC = () => {
 
       {/* ── Inline Write Box ── */}
       <motion.div
+        ref={formRef}
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.05)] border border-gray-100 p-5 mb-6"
@@ -121,7 +130,7 @@ const PrayerScreen: React.FC = () => {
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="이름 (닉네임)"
-            onFocus={(e) => setTimeout(() => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300)}
+            onFocus={scrollToInput}
             className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition"
           />
           <div className="relative">
@@ -130,7 +139,7 @@ const PrayerScreen: React.FC = () => {
               onChange={(e) => setContent(e.target.value)}
               placeholder="기도 제목이나 응원의 메시지를 자유롭게 남겨주세요."
               rows={2}
-              onFocus={(e) => setTimeout(() => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300)}
+              onFocus={scrollToInput}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-14 text-sm bg-gray-50 focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition resize-none"
             />
             <motion.button
