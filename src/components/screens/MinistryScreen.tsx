@@ -41,9 +41,9 @@ const scheduleData = [
   {
     day: 'Day 5', date: '8월 18일 (화)', title: '자유시간 및 귀국', status: 'upcoming',
     details: [
-      { id: 16, time: '08:30', task: '자유시간' },
+      { id: 16, time: '08:30', task: '짐 정리' },
       { id: 17, time: '13:00', task: '공항 이동 (국내선 탑승)' },
-      { id: 18, time: '21:00', task: '국제선 탑승 (대한항공/아시아나)' },
+      { id: 18, time: '21:00', task: '국제선 탑승(23:55)' },
     ]
   }
 ];
