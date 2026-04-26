@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Lock } from 'lucide-react';
+import React, { useRef, useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Lock, ChevronDown } from 'lucide-react';
 
 interface HomeScreenProps {
   onOpenAdmin?: () => void;
@@ -40,6 +40,7 @@ const outreachTeam = {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [teamOpen, setTeamOpen] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -176,33 +177,55 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
 
         {/* Team Members Section */}
         <section>
-          <div className="flex items-end justify-between mb-4 px-1">
-            <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">Outreach Team</h3>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total {outreachTeam.members.flat().length} members</span>
-          </div>
-          
-          <div className="grid grid-cols-1 gap-0.5">
-            {outreachTeam.members.map((names, idx) => (
+          <button
+            onClick={() => setTeamOpen(prev => !prev)}
+            className="w-full flex items-center justify-between mb-4 px-1 text-left"
+          >
+            <div>
+              <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">Outreach Team</h3>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total {outreachTeam.members.flat().length} members</span>
+            </div>
+            <motion.div
+              animate={{ rotate: teamOpen ? 180 : 0 }}
+              transition={{ duration: 0.25 }}
+              className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0"
+            >
+              <ChevronDown size={16} className="text-gray-500" />
+            </motion.div>
+          </button>
+
+          <AnimatePresence initial={false}>
+            {teamOpen && (
               <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 * idx }}
-                className="bg-gray-50/50 border border-gray-100/50 rounded-xl py-1.5 px-3"
+                key="team-list"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="overflow-hidden"
               >
-                <div className="flex flex-wrap gap-2">
-                  {names.map((name, nIdx) => (
-                    <span 
-                      key={nIdx}
-                      className="text-sm font-semibold text-gray-900"
+                <div className="grid grid-cols-1 gap-0.5">
+                  {outreachTeam.members.map((names, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-gray-50/50 border border-gray-100/50 rounded-xl py-1.5 px-3"
                     >
-                      {name}{nIdx < names.length - 1 && <span className="text-gray-200 ml-2 font-normal">|</span>}
-                    </span>
+                      <div className="flex flex-wrap gap-2">
+                        {names.map((name, nIdx) => (
+                          <span
+                            key={nIdx}
+                            className="text-sm font-semibold text-gray-900"
+                          >
+                            {name}{nIdx < names.length - 1 && <span className="text-gray-200 ml-2 font-normal">|</span>}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </motion.div>
-            ))}
-          </div>
+            )}
+          </AnimatePresence>
         </section>
       </div>
     </motion.div>
