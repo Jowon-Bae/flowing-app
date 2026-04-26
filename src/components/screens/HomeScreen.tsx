@@ -9,12 +9,12 @@ interface HomeScreenProps {
 
 const outreachTeam = {
   leaders: [
-    { role: '담당 교역자', name: '배주원', emoji: '⛪' },
-    { role: '담당 장로', name: '김승준', emoji: '🙏' },
-    { role: '행정팀장', name: '정지혜', emoji: '📋' },
-    { role: '회계', name: '임지영', emoji: '💰' },
+    { role: '담당 교역자', name: '배주원' },
+    { role: '담당 장로', name: '김승준' },
+    { role: '행정팀장', name: '정지혜' },
+    { role: '회계', name: '임지영' },
   ],
-  families: [
+  members: [
     ['배주원', '이지은', '배이안'],
     ['김승준', '김규도'],
     ['이성재', '이정안'],
@@ -32,10 +32,8 @@ const outreachTeam = {
     ['박규태', '김도희'],
     ['김진수', '유재경', '김차율'],
     ['정진아', '김루카스', '김재스퍼'],
-  ],
-  individuals: [
-    '안지원', '송유섭', '전영지', '신종원', '신대환',
-    '김요한', '장한울', '오준호', '조성수', '김기환', '천에녹',
+    ['안지원'], ['송유섭'], ['전영지'], ['신종원'], ['신대환'],
+    ['김요한'], ['장한울'], ['오준호'], ['조성수'], ['김기환'], ['천에녹'],
   ],
 };
 
@@ -166,15 +164,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 * idx }}
-                className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3"
+                className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col justify-center"
               >
-                <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-xl shrink-0">
-                  {leader.emoji}
-                </div>
-                <div>
-                  <p className="text-[10px] text-primary-600 font-bold leading-none mb-1">{leader.role}</p>
-                  <p className="text-sm font-bold text-gray-900">{leader.name}</p>
-                </div>
+                <p className="text-[10px] text-primary-600 font-bold leading-none mb-1.5">{leader.role}</p>
+                <p className="text-sm font-bold text-gray-900">{leader.name}</p>
               </motion.div>
             ))}
           </div>
@@ -184,46 +177,30 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
         <section>
           <div className="flex items-end justify-between mb-4 px-1">
             <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">Outreach Team</h3>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total {outreachTeam.families.flat().length + outreachTeam.individuals.length} members</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total {outreachTeam.members.flat().length} members</span>
           </div>
           
-          <div className="space-y-6">
-            {/* Family/Group Units */}
-            <div className="grid grid-cols-1 gap-3">
-              {outreachTeam.families.map((names, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 * idx }}
-                  className="bg-gray-50/50 border border-gray-100/50 rounded-2xl p-4"
-                >
-                  <div className="flex flex-wrap gap-2">
-                    {names.map((name, nIdx) => (
-                      <span 
-                        key={nIdx}
-                        className={`text-sm font-semibold ${nIdx === 0 ? 'text-gray-900' : 'text-gray-500'}`}
-                      >
-                        {name}{nIdx < names.length - 1 && <span className="text-gray-200 ml-2 font-normal">|</span>}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Individual Members */}
-            <div className="bg-white border border-gray-100 rounded-3xl p-6">
-              <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <span className="w-1 h-1 rounded-full bg-gray-300" />
-                Additional Members
-              </h4>
-              <div className="flex flex-wrap gap-x-4 gap-y-2">
-                {outreachTeam.individuals.map((name, idx) => (
-                  <span key={idx} className="text-sm font-medium text-gray-600">{name}</span>
-                ))}
-              </div>
-            </div>
+          <div className="grid grid-cols-1 gap-3">
+            {outreachTeam.members.map((names, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 * idx }}
+                className="bg-gray-50/50 border border-gray-100/50 rounded-2xl p-4"
+              >
+                <div className="flex flex-wrap gap-2">
+                  {names.map((name, nIdx) => (
+                    <span 
+                      key={nIdx}
+                      className={`text-sm font-semibold ${nIdx === 0 ? 'text-gray-900' : 'text-gray-500'}`}
+                    >
+                      {name}{nIdx < names.length - 1 && <span className="text-gray-200 ml-2 font-normal">|</span>}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </section>
       </div>
