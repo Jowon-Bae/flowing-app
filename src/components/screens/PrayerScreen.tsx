@@ -124,9 +124,16 @@ const PrayerScreen: React.FC = () => {
         className="bg-[#0f3d3c] rounded-2xl p-6 mb-8 text-white shadow-lg relative overflow-hidden"
       >
         <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl -mr-10 -mt-10" />
-        <h3 className="text-xl font-bold mb-5 flex items-center gap-2 text-teal-50">
+        <h3 className="text-xl font-bold mb-2 flex items-center gap-2 text-teal-50">
           기도편지 "기도해 주세요!"
         </h3>
+        <a
+          href="tel:01090171848"
+          className="inline-flex items-center gap-1.5 text-teal-300 text-[13px] font-semibold mb-5 active:opacity-70 transition"
+        >
+          <span>📞</span>
+          후원 문의 : 배주원 목사 (010-9017-1848)
+        </a>
         <div className="space-y-5 text-[14px] leading-relaxed relative z-10">
           <div>
             <p className="font-bold text-teal-200 mb-1">1. 주님의 영광이 드러나는 통로 되게 하소서</p>
