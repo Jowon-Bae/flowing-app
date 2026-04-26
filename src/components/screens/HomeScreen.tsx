@@ -34,6 +34,7 @@ const outreachTeam = {
     ['정진아', '김루카스', '김재스퍼'],
     ['안지원'], ['송유섭'], ['전영지'], ['신종원'], ['신대환'],
     ['김요한'], ['장한울'], ['오준호'], ['조성수'], ['김기환'], ['천에녹'],
+    ['김민우', '김도윤'],
   ],
 };
 
@@ -180,14 +181,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total {outreachTeam.members.flat().length} members</span>
           </div>
           
-          <div className="grid grid-cols-1 gap-3">
+          <div className="grid grid-cols-1 gap-1.5">
             {outreachTeam.members.map((names, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 * idx }}
-                className="bg-gray-50/50 border border-gray-100/50 rounded-2xl p-4"
+                className="bg-gray-50/50 border border-gray-100/50 rounded-xl p-3"
               >
                 <div className="flex flex-wrap gap-2">
                   {names.map((name, nIdx) => (
