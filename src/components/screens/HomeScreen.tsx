@@ -153,29 +153,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
           </p>
         </section>
 
-        {/* Leadership Section */}
-        <section>
-          <div className="flex items-end justify-between mb-4 px-1">
-            <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">Outreach Leaders</h3>
-            <span className="text-[10px] font-bold text-primary-500 uppercase tracking-widest bg-primary-50 px-2 py-0.5 rounded">Core Team</span>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {outreachTeam.leaders.map((leader, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1 * idx }}
-                className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col justify-center"
-              >
-                <p className="text-[10px] text-primary-600 font-bold leading-none mb-1.5">{leader.role}</p>
-                <p className="text-sm font-bold text-gray-900">{leader.name}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Team Members Section */}
+        {/* Team Section (Leaders + Members, collapsible) */}
         <section>
           <button
             onClick={() => setTeamOpen(prev => !prev)}
@@ -183,7 +161,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
           >
             <div>
               <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">Outreach Team</h3>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total {outreachTeam.members.flat().length} members</span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                Total {outreachTeam.members.flat().length} members
+              </span>
             </div>
             <motion.div
               animate={{ rotate: teamOpen ? 180 : 0 }}
@@ -202,26 +182,46 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="overflow-hidden"
+                className="overflow-hidden space-y-4"
               >
-                <div className="grid grid-cols-1 gap-0.5">
-                  {outreachTeam.members.map((names, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-gray-50/50 border border-gray-100/50 rounded-xl py-1.5 px-3"
-                    >
-                      <div className="flex flex-wrap gap-2">
-                        {names.map((name, nIdx) => (
-                          <span
-                            key={nIdx}
-                            className="text-sm font-semibold text-gray-900"
-                          >
-                            {name}{nIdx < names.length - 1 && <span className="text-gray-200 ml-2 font-normal">|</span>}
-                          </span>
-                        ))}
+                {/* Leaders */}
+                <div>
+                  <p className="text-[10px] font-bold text-primary-500 uppercase tracking-widest mb-2 px-1">Core Leaders</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {outreachTeam.leaders.map((leader, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col justify-center"
+                      >
+                        <p className="text-[10px] text-primary-600 font-bold leading-none mb-1.5">{leader.role}</p>
+                        <p className="text-sm font-bold text-gray-900">{leader.name}</p>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </div>
+
+                {/* Members */}
+                <div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">Members</p>
+                  <div className="grid grid-cols-1 gap-0.5">
+                    {outreachTeam.members.map((names, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-gray-50/50 border border-gray-100/50 rounded-xl py-1.5 px-3"
+                      >
+                        <div className="flex flex-wrap gap-2">
+                          {names.map((name, nIdx) => (
+                            <span
+                              key={nIdx}
+                              className="text-sm font-semibold text-gray-900"
+                            >
+                              {name}{nIdx < names.length - 1 && <span className="text-gray-200 ml-2 font-normal">|</span>}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </motion.div>
             )}
