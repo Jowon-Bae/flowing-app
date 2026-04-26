@@ -117,6 +117,36 @@ const PrayerScreen: React.FC = () => {
         <p className="text-gray-500 text-sm">기도 제목을 함께 나누고 응원해 주세요.</p>
       </div>
 
+      {/* ── Overall Prayer Topics ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-[#0f3d3c] rounded-2xl p-6 mb-8 text-white shadow-lg relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl -mr-10 -mt-10" />
+        <h3 className="text-xl font-bold mb-5 flex items-center gap-2 text-teal-50">
+          기도편지 "기도해 주세요!"
+        </h3>
+        <div className="space-y-5 text-[14px] leading-relaxed relative z-10">
+          <div>
+            <p className="font-bold text-teal-200 mb-1">1. 주님의 영광이 드러나는 통로 되게 하소서</p>
+            <p className="text-teal-50/80">우리의 사역이 인간의 열심이 아닌, 오직 하나님의 살아계심과 영광만을 드러내는 복된 시간이 되게 하옵소서!</p>
+          </div>
+          <div>
+            <p className="font-bold text-teal-200 mb-1">2. 기도로 세워지는 준비 과정 되게 하소서</p>
+            <p className="text-teal-50/80">사역의 현장에 가기 전, 먼저 기도로 무장하게 하시고 모든 팀원이 영적으로 하나 되어 기쁨으로 준비하게 하옵소서!</p>
+          </div>
+          <div>
+            <p className="font-bold text-teal-200 mb-1">3. 환경을 뛰어넘는 담대한 믿음을 주소서</p>
+            <p className="text-teal-50/80">불안정한 국제 정세와 가파르게 오르는 재정적 부담 앞에 위축되지 않게 하시고, 모든 필요를 채우시는 하나님을 신뢰하며 믿음으로 전진할 담대함을 주옵소서!</p>
+          </div>
+          <div>
+            <p className="font-bold text-teal-200 mb-1">4. 사랑으로 하나 되는 공동체 되게 하소서</p>
+            <p className="text-teal-50/80">서로의 부족함을 채워주며, 사랑과 헌신으로 섬기는 아름다운 팀워크를 허락하옵소서. 우리 안에 먼저 천국이 임하는 아웃리치 팀이 되게 하소서!</p>
+          </div>
+        </div>
+      </motion.div>
+
       {/* ── Inline Write Box ── */}
       <motion.div
         ref={formRef}
