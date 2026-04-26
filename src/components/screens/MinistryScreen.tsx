@@ -26,7 +26,7 @@ const scheduleData = [
     day: 'Day 3', date: '8월 16일 (주일)', title: '주일 예배 및 청년 사역', status: 'upcoming',
     details: [
       { id: 10, time: '09:00', task: '주일 예배 (구밧장로교회)' },
-      { id: 11, time: '13:00', task: '청년 사역 (구밧교회)', icon: Users },
+      { id: 11, time: '13:00', task: '현지 청년을 위한 힐링캠프', icon: Users },
       { id: 12, time: '20:00', task: '나눔 (4일차 사역 준비)' },
     ]
   },
