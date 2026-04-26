@@ -144,6 +144,10 @@ const PrayerScreen: React.FC = () => {
             <p className="font-bold text-teal-200 mb-1">4. 사랑으로 하나 되는 공동체 되게 하소서</p>
             <p className="text-teal-50/80">서로의 부족함을 채워주며, 사랑과 헌신으로 섬기는 아름다운 팀워크를 허락하옵소서. 우리 안에 먼저 천국이 임하는 아웃리치 팀이 되게 하소서!</p>
           </div>
+          <div>
+            <p className="font-bold text-teal-200 mb-1">5. 부족한 재정이 채워지게 하소서</p>
+            <p className="text-teal-50/80">필리핀 사역에 필요한 재정들이 있습니다. 하늘의 보고를 열어주셔서 사역에 필요한 모든 재정이 채워지게 하소서! 이로인해 모든 아웃리치 팀원들이 여호와 이레의 하나님을 경험하게 하소서!</p>
+          </div>
         </div>
       </motion.div>
 
