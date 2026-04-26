@@ -194,7 +194,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
                   {names.map((name, nIdx) => (
                     <span 
                       key={nIdx}
-                      className={`text-sm font-semibold ${nIdx === 0 ? 'text-gray-900' : 'text-gray-500'}`}
+                      className="text-sm font-semibold text-gray-900"
                     >
                       {name}{nIdx < names.length - 1 && <span className="text-gray-200 ml-2 font-normal">|</span>}
                     </span>
