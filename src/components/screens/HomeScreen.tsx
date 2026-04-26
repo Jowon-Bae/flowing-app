@@ -181,14 +181,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onOpenAdmin, isActive = true })
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total {outreachTeam.members.flat().length} members</span>
           </div>
           
-          <div className="grid grid-cols-1 gap-1.5">
+          <div className="grid grid-cols-1 gap-0.5">
             {outreachTeam.members.map((names, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 * idx }}
-                className="bg-gray-50/50 border border-gray-100/50 rounded-xl p-3"
+                className="bg-gray-50/50 border border-gray-100/50 rounded-xl py-1.5 px-3"
               >
                 <div className="flex flex-wrap gap-2">
                   {names.map((name, nIdx) => (
