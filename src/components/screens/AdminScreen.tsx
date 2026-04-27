@@ -1,18 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { usePrayerContext } from '../../context/PrayerContext';
 import { useNewsContext } from '../../context/NewsContext';
-import { Trash2, TrendingUp, Users, ArrowLeft, Newspaper, MessageSquare } from 'lucide-react';
+import { useMinistryPhotoContext } from '../../context/MinistryPhotoContext';
+import { Trash2, TrendingUp, Users, ArrowLeft, Newspaper, MessageSquare, Image, PlusCircle, Loader2 } from 'lucide-react';
 
 interface AdminScreenProps {
   onClose: () => void;
 }
 
+const ministryLabels: { id: string; label: string }[] = [
+  { id: 'meals',      label: '마을 전도 및 피딩 사역' },
+  { id: 'basketball', label: '농구 경기를 통한 교제 및 전도' },
+  { id: 'blessing',   label: '선교사님 블레싱' },
+  { id: 'healing',    label: '현지 청년들을 위한 힐링캠프' },
+  { id: 'medical',    label: '의료 선교 사역' },
+];
+
 const AdminScreen: React.FC<AdminScreenProps> = ({ onClose }) => {
   const { prayers, deletePrayer, getStats } = usePrayerContext();
   const { posts, deletePost } = useNewsContext();
+  const { photos, uploadPhoto, deletePhoto, uploading } = useMinistryPhotoContext();
   const stats = getStats();
-  const [activeSection, setActiveSection] = useState<'prayer' | 'news'>('news');
+  const [activeSection, setActiveSection] = useState<'prayer' | 'news' | 'photos'>('news');
+  const [selectedMinistry, setSelectedMinistry] = useState('meals');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    for (const file of Array.from(files)) {
+      await uploadPhoto(selectedMinistry, file);
+    }
+    e.target.value = '';
+  };
+
+  const currentPhotos = photos[selectedMinistry] ?? [];
 
   return (
     <motion.div
@@ -66,6 +89,12 @@ const AdminScreen: React.FC<AdminScreenProps> = ({ onClose }) => {
           className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-semibold transition ${activeSection === 'prayer' ? 'bg-white shadow text-gray-900' : 'text-gray-400'}`}
         >
           <MessageSquare size={15} /> 기도 제목
+        </button>
+        <button
+          onClick={() => setActiveSection('photos')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-semibold transition ${activeSection === 'photos' ? 'bg-white shadow text-gray-900' : 'text-gray-400'}`}
+        >
+          <Image size={15} /> 사역 사진
         </button>
       </div>
 
@@ -135,6 +164,70 @@ const AdminScreen: React.FC<AdminScreenProps> = ({ onClose }) => {
                     className="text-gray-300 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50"
                   >
                     <Trash2 size={18} />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Ministry Photos */}
+      {activeSection === 'photos' && (
+        <div>
+          <div className="mb-4">
+            <h3 className="font-bold text-gray-900 mb-3">사역 사진 관리</h3>
+            {/* Ministry Selector */}
+            <select
+              value={selectedMinistry}
+              onChange={(e) => setSelectedMinistry(e.target.value)}
+              className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-300"
+            >
+              {ministryLabels.map((m) => (
+                <option key={m.id} value={m.id}>{m.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Upload Button */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="w-full flex items-center justify-center gap-2 py-3 mb-4 rounded-xl bg-primary-600 text-white font-semibold text-sm active:scale-[0.98] transition disabled:opacity-60"
+          >
+            {uploading ? (
+              <><Loader2 size={18} className="animate-spin" /> 업로드 중...</>
+            ) : (
+              <><PlusCircle size={18} /> 사진 추가하기</>
+            )}
+          </button>
+
+          {/* Photo Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {currentPhotos.length === 0 ? (
+              <div className="col-span-2 text-center py-10 bg-white rounded-2xl border border-dashed border-gray-200">
+                <p className="text-gray-400 text-sm">이 사역에 등록된 사진이 없습니다.</p>
+              </div>
+            ) : (
+              currentPhotos.map((photo) => (
+                <div key={photo.id} className="relative group rounded-xl overflow-hidden aspect-square bg-gray-100">
+                  <img src={photo.url} alt="사역 사진" className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => {
+                      if (window.confirm('이 사진을 삭제하시겠습니까?'))
+                        deletePhoto(selectedMinistry, photo.id, photo.storagePath);
+                    }}
+                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md active:scale-90 transition"
+                  >
+                    <Trash2 size={14} />
                   </button>
                 </div>
               ))

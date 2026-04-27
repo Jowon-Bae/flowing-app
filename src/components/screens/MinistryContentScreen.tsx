@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ArrowLeft } from 'lucide-react';
+import { ChevronRight, ArrowLeft, ImageOff } from 'lucide-react';
+import { useMinistryPhotoContext } from '../../context/MinistryPhotoContext';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -39,42 +40,93 @@ const ministryItems = [
 
 // ── Detail Page ──
 interface DetailProps { item: typeof ministryItems[0]; onBack: () => void; }
-const MinistryDetail: React.FC<DetailProps> = ({ item, onBack }) => (
-  <motion.div
-    initial={{ opacity: 0, x: 60 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: 60 }}
-    transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-    className="absolute inset-0 bg-white z-30 overflow-y-auto no-scrollbar pb-16"
-  >
-    <div className="relative h-60 w-full">
-      <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-      <button onClick={onBack} className="absolute top-5 left-5 w-9 h-9 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white">
-        <ArrowLeft size={18} />
-      </button>
-      <div className="absolute bottom-5 left-5 right-5">
-        <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">사역 내용</p>
-        <h1 className="text-white text-2xl font-bold leading-tight">{item.title}</h1>
+const MinistryDetail: React.FC<DetailProps> = ({ item, onBack }) => {
+  const { photos } = useMinistryPhotoContext();
+  const ministryPhotos = photos[item.id] ?? [];
+  const [lightboxPhoto, setLightboxPhoto] = useState<string | null>(null);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 60 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 60 }}
+      transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+      className="absolute inset-0 bg-white z-30 overflow-y-auto no-scrollbar pb-16"
+    >
+      <div className="relative h-60 w-full">
+        <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        <button onClick={onBack} className="absolute top-5 left-5 w-9 h-9 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white">
+          <ArrowLeft size={18} />
+        </button>
+        <div className="absolute bottom-5 left-5 right-5">
+          <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">사역 내용</p>
+          <h1 className="text-white text-2xl font-bold leading-tight">{item.title}</h1>
+        </div>
       </div>
-    </div>
-    <div className="px-6 pt-6">
-      <p className="text-primary-600 font-bold text-[15px] mb-4">{item.subtitle}</p>
-      <p className="text-gray-600 text-[15px] leading-relaxed mb-6">{item.body}</p>
-      <div className="bg-primary-50 rounded-2xl p-5">
-        <h3 className="font-bold text-gray-900 mb-3 text-sm">📌 주요 내용</h3>
-        <ul className="space-y-2.5">
-          {item.highlights.map((h, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
-              <span className="mt-1 w-1.5 h-1.5 rounded-full bg-primary-500 shrink-0" />
-              {h}
-            </li>
-          ))}
-        </ul>
+      <div className="px-6 pt-6">
+        <p className="text-primary-600 font-bold text-[15px] mb-4">{item.subtitle}</p>
+        <p className="text-gray-600 text-[15px] leading-relaxed mb-6">{item.body}</p>
+        <div className="bg-primary-50 rounded-2xl p-5 mb-6">
+          <h3 className="font-bold text-gray-900 mb-3 text-sm">📌 주요 내용</h3>
+          <ul className="space-y-2.5">
+            {item.highlights.map((h, i) => (
+              <li key={i} className="flex items-start gap-2.5 text-sm text-gray-700">
+                <span className="mt-1 w-1.5 h-1.5 rounded-full bg-primary-500 shrink-0" />
+                {h}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Photo Gallery */}
+        <div className="mb-6">
+          <h3 className="font-bold text-gray-900 mb-3 text-sm">📷 사역 현장 사진</h3>
+          {ministryPhotos.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+              <ImageOff size={28} className="text-gray-300 mb-2" />
+              <p className="text-gray-400 text-sm">아직 등록된 사진이 없습니다.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              {ministryPhotos.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="aspect-square rounded-xl overflow-hidden cursor-pointer active:scale-95 transition-transform"
+                  onClick={() => setLightboxPhoto(photo.url)}
+                >
+                  <img src={photo.url} alt="사역 사진" className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  </motion.div>
-);
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxPhoto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+            onClick={() => setLightboxPhoto(null)}
+          >
+            <motion.img
+              initial={{ scale: 0.85 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.85 }}
+              src={lightboxPhoto}
+              alt="사역 사진"
+              className="max-w-full max-h-full rounded-xl object-contain"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
 
 // ── Main MinistryContentScreen ──
 const MinistryContentScreen: React.FC = () => {

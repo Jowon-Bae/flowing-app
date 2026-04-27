@@ -13,6 +13,7 @@ import AdminScreen from './components/screens/AdminScreen';
 
 import { PrayerProvider } from './context/PrayerContext';
 import { NewsProvider } from './context/NewsContext';
+import { MinistryPhotoProvider } from './context/MinistryPhotoContext';
 
 type Tab = 'home' | 'schedule' | 'ministry-content' | 'news' | 'prayer' | 'admin';
 
@@ -104,6 +105,7 @@ function App() {
   return (
     <PrayerProvider>
       <NewsProvider>
+        <MinistryPhotoProvider>
         <div className="min-h-[100dvh] bg-gray-50 flex justify-center">
           {/* Global Audio */}
           <audio ref={audioRef} id="global-bgm" preload="auto" loop playsInline>
@@ -174,6 +176,7 @@ function App() {
             </AnimatePresence>
           </div>
         </div>
+        </MinistryPhotoProvider>
       </NewsProvider>
     </PrayerProvider>
   );
