@@ -52,7 +52,7 @@ export const MinistryPhotoProvider: React.FC<{ children: ReactNode }> = ({ child
       formData.append('file', file);
       formData.append('upload_preset', 'ministry_photos');
 
-      const res = await fetch(`https://api.cloudinary.com/v1_1/dhxwzeowy/image/upload`, {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/dhvzsecxy/image/upload`, {
         method: 'POST',
         body: formData,
       });
