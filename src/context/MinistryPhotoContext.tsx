@@ -69,9 +69,9 @@ export const MinistryPhotoProvider: React.FC<{ children: ReactNode }> = ({ child
         storagePath,
         createdAt: serverTimestamp(),
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error uploading photo:', e);
-      alert('사진 업로드에 실패했습니다. 다시 시도해주세요.');
+      alert(`사진 업로드에 실패했습니다: ${e.message || '알 수 없는 오류'}`);
     } finally {
       setUploading(false);
     }
