@@ -2,8 +2,7 @@ import React, { createContext, useContext, useState, useEffect, type ReactNode }
 import {
   collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp,
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '../lib/firebase';
+import { db } from '../lib/firebase';
 
 export interface MinistryPhoto {
   id: string;
@@ -49,10 +48,21 @@ export const MinistryPhotoProvider: React.FC<{ children: ReactNode }> = ({ child
   const uploadPhoto = async (ministryId: string, file: File) => {
     setUploading(true);
     try {
-      const storagePath = `ministryPhotos/${ministryId}/${Date.now()}_${file.name}`;
-      const storageRef = ref(storage, storagePath);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', 'ministry_photos');
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/dhxwzewoy/image/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error?.message || 'Upload failed');
+      
+      const url = data.secure_url;
+      const storagePath = data.public_id;
+
       await addDoc(collection(db, 'ministryPhotos'), {
         ministryId,
         url,
@@ -61,16 +71,17 @@ export const MinistryPhotoProvider: React.FC<{ children: ReactNode }> = ({ child
       });
     } catch (e) {
       console.error('Error uploading photo:', e);
+      alert('사진 업로드에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setUploading(false);
     }
   };
 
-  const deletePhoto = async (_ministryId: string, photoId: string, storagePath: string) => {
+  const deletePhoto = async (_ministryId: string, photoId: string, _storagePath: string) => {
     try {
+      // Delete document from Firestore so it doesn't show in the app.
+      // Note: Cloudinary doesn't support unsigned client-side deletions for security.
       await deleteDoc(doc(db, 'ministryPhotos', photoId));
-      const storageRef = ref(storage, storagePath);
-      await deleteObject(storageRef);
     } catch (e) {
       console.error('Error deleting photo:', e);
     }
