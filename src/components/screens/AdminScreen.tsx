@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { usePrayerContext } from '../../context/PrayerContext';
 import { useNewsContext } from '../../context/NewsContext';
 import { useMinistryPhotoContext } from '../../context/MinistryPhotoContext';
-import { Trash2, TrendingUp, Users, ArrowLeft, Newspaper, MessageSquare, Image, PlusCircle, Loader2 } from 'lucide-react';
+import { Trash2, TrendingUp, Users, ArrowLeft, Newspaper, MessageSquare, Image, PlusCircle, Loader2, BarChart2, CalendarDays } from 'lucide-react';
+import { collection, getCountFromServer, query, where } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 interface AdminScreenProps {
   onClose: () => void;
@@ -22,9 +24,64 @@ const AdminScreen: React.FC<AdminScreenProps> = ({ onClose }) => {
   const { posts, deletePost } = useNewsContext();
   const { photos, uploadPhoto, deletePhoto, uploading } = useMinistryPhotoContext();
   const stats = getStats();
-  const [activeSection, setActiveSection] = useState<'prayer' | 'news' | 'photos'>('news');
+  const [activeSection, setActiveSection] = useState<'prayer' | 'news' | 'photos' | 'stats'>('news');
   const [selectedMinistry, setSelectedMinistry] = useState('meals');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [analytics, setAnalytics] = useState({
+    totalUsers: 0,
+    todayVisits: 0,
+    recentVisits: [] as { date: string; displayDate: string; count: number }[],
+    loading: true
+  });
+
+  useEffect(() => {
+    if (activeSection !== 'stats') return;
+
+    const fetchAnalytics = async () => {
+      setAnalytics(prev => ({ ...prev, loading: true }));
+      try {
+        const totalUsersSnap = await getCountFromServer(collection(db, 'visitors'));
+        const totalUsers = totalUsersSnap.data().count;
+
+        const today = new Date();
+        const dates = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(today);
+          d.setDate(today.getDate() - i);
+          const yyyy = d.getFullYear();
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          const dd = String(d.getDate()).padStart(2, '0');
+          dates.push({ date: `${yyyy}-${mm}-${dd}`, displayDate: `${mm}.${dd}` });
+        }
+
+        const recentVisitsData = [];
+        let todayVisitsCount = 0;
+
+        for (const dateObj of dates) {
+          const q = query(collection(db, 'visits'), where('date', '==', dateObj.date));
+          const snap = await getCountFromServer(q);
+          const count = snap.data().count;
+          recentVisitsData.push({ ...dateObj, count });
+          if (dateObj.date === dates[6].date) {
+            todayVisitsCount = count;
+          }
+        }
+
+        setAnalytics({
+          totalUsers,
+          todayVisits: todayVisitsCount,
+          recentVisits: recentVisitsData.reverse(), // Show today first
+          loading: false
+        });
+      } catch (e) {
+        console.error('Failed to fetch analytics', e);
+        setAnalytics(prev => ({ ...prev, loading: false }));
+      }
+    };
+
+    fetchAnalytics();
+  }, [activeSection]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -58,49 +115,118 @@ const AdminScreen: React.FC<AdminScreenProps> = ({ onClose }) => {
         </button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
-          <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mb-2">
-            <Users size={20} />
+      {/* Main Stats */}
+      {activeSection !== 'stats' && (
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
+            <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mb-2">
+              <Users size={20} />
+            </div>
+            <p className="text-3xl font-bold text-gray-900 mb-1">{stats.totalPrayers}</p>
+            <p className="text-xs text-gray-400 font-medium">기도 제목 수</p>
           </div>
-          <p className="text-3xl font-bold text-gray-900 mb-1">{stats.totalPrayers}</p>
-          <p className="text-xs text-gray-400 font-medium">기도 제목 수</p>
-        </div>
-        <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
-          <div className="w-10 h-10 rounded-full bg-primary-50 text-primary-500 flex items-center justify-center mb-2">
-            <TrendingUp size={20} />
+          <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
+            <div className="w-10 h-10 rounded-full bg-primary-50 text-primary-500 flex items-center justify-center mb-2">
+              <TrendingUp size={20} />
+            </div>
+            <p className="text-3xl font-bold text-gray-900 mb-1">{stats.totalAmens}</p>
+            <p className="text-xs text-gray-400 font-medium">총 기도 동참</p>
           </div>
-          <p className="text-3xl font-bold text-gray-900 mb-1">{stats.totalAmens}</p>
-          <p className="text-xs text-gray-400 font-medium">총 기도 동참</p>
         </div>
-      </div>
+      )}
 
       {/* Section Toggle */}
       <div className="bg-gray-100 rounded-xl p-1 flex mb-6">
         <button
           onClick={() => setActiveSection('news')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-semibold transition ${activeSection === 'news' ? 'bg-white shadow text-gray-900' : 'text-gray-400'}`}
+          className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-lg text-xs font-semibold transition ${activeSection === 'news' ? 'bg-white shadow text-gray-900' : 'text-gray-400'}`}
         >
-          <Newspaper size={15} /> 현장 소식
+          <Newspaper size={14} /> 현장 소식
         </button>
         <button
           onClick={() => setActiveSection('prayer')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-semibold transition ${activeSection === 'prayer' ? 'bg-white shadow text-gray-900' : 'text-gray-400'}`}
+          className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-lg text-xs font-semibold transition ${activeSection === 'prayer' ? 'bg-white shadow text-gray-900' : 'text-gray-400'}`}
         >
-          <MessageSquare size={15} /> 기도 제목
+          <MessageSquare size={14} /> 기도 제목
         </button>
         <button
           onClick={() => setActiveSection('photos')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-semibold transition ${activeSection === 'photos' ? 'bg-white shadow text-gray-900' : 'text-gray-400'}`}
+          className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-lg text-xs font-semibold transition ${activeSection === 'photos' ? 'bg-white shadow text-gray-900' : 'text-gray-400'}`}
         >
-          <Image size={15} /> 사역 사진
+          <Image size={14} /> 사역 사진
+        </button>
+        <button
+          onClick={() => setActiveSection('stats')}
+          className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-lg text-xs font-semibold transition ${activeSection === 'stats' ? 'bg-white shadow text-gray-900' : 'text-gray-400'}`}
+        >
+          <BarChart2 size={14} /> 통계
         </button>
       </div>
 
+      {/* Analytics List */}
+      {activeSection === 'stats' && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="font-bold text-gray-900">앱 이용자 통계</h3>
+          </div>
+
+          {analytics.loading ? (
+            <div className="flex flex-col items-center justify-center py-10 bg-white rounded-2xl border border-gray-100">
+              <Loader2 size={24} className="animate-spin text-primary-500 mb-2" />
+              <p className="text-sm text-gray-400">데이터를 불러오는 중...</p>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
+                  <p className="text-3xl font-bold text-gray-900 mb-1">{analytics.totalUsers}</p>
+                  <p className="text-xs text-gray-400 font-medium">총 누적 방문자 (기기 수)</p>
+                </div>
+                <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center">
+                  <p className="text-3xl font-bold text-primary-600 mb-1">{analytics.todayVisits}</p>
+                  <p className="text-xs text-gray-400 font-medium">오늘 방문자</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-4 bg-gray-50/50 border-b border-gray-100 flex items-center gap-2">
+                  <CalendarDays size={16} className="text-gray-500" />
+                  <h4 className="font-bold text-gray-800 text-sm">최근 7일 출석 현황</h4>
+                </div>
+                <div className="divide-y divide-gray-50">
+                  {analytics.recentVisits.map((visit, index) => {
+                    const maxCount = Math.max(...analytics.recentVisits.map(v => v.count), 1);
+                    const widthPercent = (visit.count / maxCount) * 100;
+                    
+                    return (
+                      <div key={visit.date} className="p-4 flex items-center gap-3">
+                        <div className="w-12 text-xs font-semibold text-gray-500 shrink-0">
+                          {index === 0 ? '오늘' : visit.displayDate}
+                        </div>
+                        <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden flex items-center">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${widthPercent}%` }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            className={`h-full rounded-full ${index === 0 ? 'bg-primary-500' : 'bg-gray-400'}`}
+                          />
+                        </div>
+                        <div className="w-8 text-right text-xs font-bold text-gray-700 shrink-0">
+                          {visit.count}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
+        </motion.div>
+      )}
+
       {/* News List */}
       {activeSection === 'news' && (
-        <div>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="mb-3 flex items-center justify-between">
             <h3 className="font-bold text-gray-900">현장 소식 관리</h3>
             <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">{posts.length}건</span>
@@ -131,12 +257,12 @@ const AdminScreen: React.FC<AdminScreenProps> = ({ onClose }) => {
               ))
             )}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Prayer List */}
       {activeSection === 'prayer' && (
-        <div>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="mb-3 flex items-center justify-between">
             <h3 className="font-bold text-gray-900">기도 제목 관리</h3>
             <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">{prayers.length}건</span>
@@ -169,12 +295,12 @@ const AdminScreen: React.FC<AdminScreenProps> = ({ onClose }) => {
               ))
             )}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Ministry Photos */}
       {activeSection === 'photos' && (
-        <div>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="mb-4">
             <h3 className="font-bold text-gray-900 mb-3">사역 사진 관리</h3>
             {/* Ministry Selector */}
@@ -233,7 +359,7 @@ const AdminScreen: React.FC<AdminScreenProps> = ({ onClose }) => {
               ))
             )}
           </div>
-        </div>
+        </motion.div>
       )}
     </motion.div>
   );

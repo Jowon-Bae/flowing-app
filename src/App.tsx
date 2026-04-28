@@ -10,6 +10,7 @@ import MinistryContentScreen from './components/screens/MinistryContentScreen';
 import NewsScreen from './components/screens/NewsScreen';
 import PrayerScreen from './components/screens/PrayerScreen';
 import AdminScreen from './components/screens/AdminScreen';
+import AnalyticsTracker from './components/AnalyticsTracker';
 
 import { PrayerProvider } from './context/PrayerContext';
 import { NewsProvider } from './context/NewsContext';
@@ -106,6 +107,7 @@ function App() {
     <PrayerProvider>
       <NewsProvider>
         <MinistryPhotoProvider>
+        <AnalyticsTracker />
         <div className="min-h-[100dvh] bg-gray-50 flex justify-center">
           {/* Global Audio */}
           <audio ref={audioRef} id="global-bgm" preload="auto" loop playsInline>
