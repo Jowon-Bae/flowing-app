@@ -10,7 +10,7 @@ interface OutreachPrayerAppScreenProps {
 }
 
 const PRAYER_TOPICS = [
-  { category: "DAY 1", title: "하나님 아버지, 오늘 하루도 주님의 은혜 안에서 살게 하소서.", verse: "시편 23:1 - 여호와는 나의 목자시니 내게 부족함이 없으리로다", prayer: "사랑의 주님, 이 사역 기간 동안 온전히 주님만을 의지하며 나아가길 원합니다." },
+  { category: "사역을 위한 기도", title: "의료팀을 위하여", verse: "시편 23:1 - 여호와는 나의 목자시니 내게 부족함이 없으리로다", prayer: "사랑의 주님, 이 사역 기간 동안 온전히 주님만을 의지하며 나아가길 원합니다." },
   { category: "DAY 2", title: "우리 아웃리치 팀이 성령으로 하나되어 맡겨진 사역을 감당하게 하소서.", verse: "에베소서 4:3 - 평안의 매는 줄로 성령이 하나 되게 하신 것을 힘써 지키라", prayer: "우리의 생각과 마음이 그리스도 안에서 하나가 되게 하시고, 십자가의 사랑으로 품게 하소서." },
   { category: "DAY 3", title: "만나는 영혼들에게 그리스도의 사랑을 진실하게 전할 용기를 주소서.", verse: "사도행전 1:8 - 오직 성령이 너희에게 임하시면 너희가 권능을 받고", prayer: "두려움을 내어쫓고 담대히 복음을 전하는 입술이 되게 하옵소서." },
   { category: "DAY 4", title: "현지 사역자들과 교회가 든든히 세워지며, 부흥이 있게 하소서.", verse: "마태복음 16:18 - 내가 이 반석 위에 내 교회를 세우리니", prayer: "우리가 다녀간 이후에도 현지 교회를 통해 영혼 구원의 역사가 계속되게 하소서." },
@@ -151,6 +151,29 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
             <p className="text-gray-600 text-[15px] leading-relaxed break-keep">
               {currentTopic.prayer}
             </p>
+          </div>
+        </motion.div>
+
+        {/* Motivation Card */}
+        <motion.div 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.05 }}
+          className="bg-white rounded-[24px] p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col items-center justify-center"
+        >
+          <div className="flex justify-center gap-3 mb-3">
+            <span className="text-primary-300 text-[10px]">✦</span>
+            <span className="text-primary-300 text-[10px]">✦</span>
+            <span className="text-primary-300 text-[10px]">✦</span>
+          </div>
+          <h3 className="text-gray-900 text-[17px] font-extrabold leading-snug mb-3">
+            여러분들의 기도가 쌓여<br />은혜로운 아웃리치를 만듭니다
+          </h3>
+          <p className="text-gray-500 text-[13px] font-medium mb-4">
+            91명 × 30일 × 10분 = <span className="text-primary-600 font-bold">27,300분</span>의 기도
+          </p>
+          <div className="bg-primary-50 text-primary-700 text-[13px] font-bold py-2 px-4 rounded-full inline-block tracking-tight">
+            오늘 당신의 10분이 아웃리치를 바꿉니다 🚀
           </div>
         </motion.div>
 
