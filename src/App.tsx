@@ -33,7 +33,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [teamSelected, setTeamSelected] = useState<'outreach' | 'intercessory' | null>(null);
-  const [outreachName, setOutreachName] = useState<string | null>(() => localStorage.getItem('flowing_outreach_name') || null);
+  const [outreachName, setOutreachName] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [isAdmin, setIsAdmin] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
@@ -59,7 +59,6 @@ function App() {
 
   const handleNameSubmit = (name: string) => {
     setOutreachName(name);
-    localStorage.setItem('flowing_outreach_name', name);
   };
 
   const handleResetTeam = () => {
