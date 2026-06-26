@@ -15,7 +15,7 @@ interface PrayerRecord {
   date: string;
 }
 
-const TOTAL_GOAL_MINUTES = 27000; // From United Camp (90 teachers * 30 days * 10 mins)
+const TOTAL_GOAL_MINUTES = 21000; // From United Camp (70 teachers * 30 days * 10 mins)
 
 const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ teamType }) => {
   const [currentDate, setCurrentDate] = useState(new Date());

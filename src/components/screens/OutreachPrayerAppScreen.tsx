@@ -23,7 +23,8 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
   const currentTopic = PRAYER_TOPICS[dayIndex];
   const dateStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
 
-  const [timer, setTimer] = useState(10 * 60);
+  const [selectedDuration, setSelectedDuration] = useState(600);
+  const [timer, setTimer] = useState(600);
   const [isRunning, setIsRunning] = useState(false);
   const [note, setNote] = useState('');
   const [completed, setCompleted] = useState(false);
@@ -51,7 +52,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
     if (isSaving) return;
     setIsSaving(true);
     try {
-      const duration = 600 - timer; // time spent praying
+      const duration = selectedDuration - timer; // time spent praying
       const dateKey = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
       
       await addDoc(collection(db, 'flowing_prayers'), {
@@ -72,7 +73,14 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
     }
   };
 
-  const progress = ((600 - timer) / 600) * 100;
+  const progress = ((selectedDuration - timer) / selectedDuration) * 100;
+
+  const handleDurationChange = (minutes: number) => {
+    const newSeconds = minutes * 60;
+    setSelectedDuration(newSeconds);
+    setTimer(newSeconds);
+    setIsRunning(false);
+  };
 
   if (completed) {
     return (
@@ -170,7 +178,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
             여러분들의 기도가 쌓여<br />은혜로운 아웃리치를 만듭니다
           </h3>
           <p className="text-gray-500 text-[13px] font-medium mb-4">
-            91명 × 30일 × 10분 = <span className="text-primary-600 font-bold">27,300분</span>의 기도
+            70명 × 30일 × 10분 = <span className="text-primary-600 font-bold">21,000분</span>의 기도
           </p>
           <div className="bg-primary-50 text-primary-700 text-[13px] font-bold py-2 px-4 rounded-full inline-block tracking-tight">
             오늘 당신의 10분이 아웃리치를 바꿉니다 🚀
@@ -188,6 +196,22 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
             <span>⏱</span> 기도 타이머
           </div>
           
+          <div className="flex justify-center gap-2 mb-6">
+            {[10, 30, 60].map(min => (
+              <button
+                key={min}
+                onClick={() => handleDurationChange(min)}
+                className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${
+                  selectedDuration === min * 60
+                    ? 'bg-primary-50 text-primary-700 border-[1.5px] border-primary-400 shadow-sm'
+                    : 'bg-white text-gray-400 border-[1.5px] border-gray-100 hover:bg-gray-50'
+                }`}
+              >
+                {min}분
+              </button>
+            ))}
+          </div>
+
           <div className="relative w-[160px] h-[160px] mx-auto mb-5">
             <svg width="160" height="160" viewBox="0 0 120 120" className="-rotate-90">
               <circle cx="60" cy="60" r="54" fill="none" stroke="#f3f4f6" strokeWidth="8" />
@@ -211,7 +235,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
           
           <div className="flex gap-3 justify-center">
             <button 
-              onClick={() => { setTimer(600); setIsRunning(false); }}
+              onClick={() => { setTimer(selectedDuration); setIsRunning(false); }}
               className="py-3 px-5 rounded-full border-[1.5px] border-gray-200 bg-white text-gray-600 font-bold text-sm hover:bg-gray-50 transition-colors"
             >
               ↺ 초기화
