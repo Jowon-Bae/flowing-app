@@ -76,11 +76,15 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
 
   if (completed) {
     return (
-      <div className="absolute inset-0 bg-gray-50 z-40 flex flex-col items-center justify-center p-6 min-h-[100dvh]">
+      <div 
+        className="absolute inset-0 z-40 flex flex-col items-center justify-center p-6 min-h-[100dvh] bg-cover bg-center"
+        style={{ backgroundImage: `url(${import.meta.env.BASE_URL}team_selection_bg.jpg)` }}
+      >
+        <div className="absolute inset-0 bg-black/20 z-0"></div>
         <motion.div 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-white rounded-3xl p-8 text-center shadow-[0_4px_24px_rgba(0,0,0,0.06)] w-full max-w-sm"
+          className="relative z-10 bg-white rounded-3xl p-8 text-center shadow-[0_4px_24px_rgba(0,0,0,0.06)] w-full max-w-sm"
         >
           <div className="text-6xl mb-6">✅</div>
           <h2 className="text-2xl font-bold text-primary-700 mb-3">오늘 기도를 완료했어요!</h2>
@@ -99,21 +103,15 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
   }
 
   return (
-    <div className="absolute inset-0 bg-gray-50 z-40 overflow-y-auto no-scrollbar pb-10 min-h-[100dvh]">
-      {/* Hero Section */}
-      <div className="relative h-[280px] w-full bg-gray-900 overflow-hidden rounded-b-[40px] shadow-sm">
-        <img 
-          src={`${import.meta.env.BASE_URL}hero.png`} 
-          alt="Hero" 
-          className="absolute inset-0 w-full h-full object-cover opacity-80"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop';
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-        
-        <div className="absolute top-6 left-6 z-10">
+    <div 
+      className="absolute inset-0 z-40 overflow-y-auto no-scrollbar pb-10 min-h-[100dvh] bg-cover bg-center"
+      style={{ backgroundImage: `url(${import.meta.env.BASE_URL}team_selection_bg.jpg)` }}
+    >
+      <div className="fixed inset-0 bg-black/20 z-0"></div>
+      
+      {/* Header Content (No separate hero image) */}
+      <div className="relative z-10 w-full pt-6 px-6 pb-12 flex flex-col">
+        <div className="mb-10">
           <button 
             onClick={onBack} 
             className="bg-white/90 backdrop-blur-sm rounded-full py-2 px-4 text-gray-800 text-xs font-bold shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-transform hover:scale-105"
@@ -122,15 +120,15 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
           </button>
         </div>
         
-        <div className="absolute bottom-8 left-6 right-6 z-10">
-          <div className="text-primary-300 text-xs font-bold mb-2 tracking-wide">{dateStr}</div>
-          <div className="text-white text-2xl font-semibold leading-snug">
-            오늘 <span className="font-extrabold text-primary-400 text-3xl">{name}</span> 님이<br/>기도하실 {teamType === 'outreach' ? '아웃리치' : '중보기도'} 제목
+        <div className="mt-auto">
+          <div className="text-white/80 text-xs font-bold mb-2 tracking-wide">{dateStr}</div>
+          <div className="text-white text-2xl font-semibold leading-snug drop-shadow-md">
+            오늘 <span className="font-extrabold text-white text-3xl">{name}</span> 님이<br/>기도하실 {teamType === 'outreach' ? '아웃리치' : '중보기도'} 제목
           </div>
         </div>
       </div>
 
-      <div className="px-5 -mt-6 relative z-20 flex flex-col gap-5">
+      <div className="px-5 relative z-20 flex flex-col gap-5">
         
         {/* Topic Card */}
         <motion.div 
@@ -214,8 +212,8 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
           className="flex flex-col gap-4 mb-4"
         >
           <div>
-            <div className="text-gray-900 text-[15px] font-bold mb-3 flex items-center gap-1">
-              <span>✏️</span> 오늘의 기도 한 문장 <span className="text-gray-400 font-medium text-sm ml-1">(선택)</span>
+            <div className="text-white text-[15px] font-bold mb-3 flex items-center gap-1 drop-shadow-sm">
+              <span>✏️</span> 오늘의 기도 한 문장 <span className="text-white/60 font-medium text-sm ml-1">(선택)</span>
             </div>
             <textarea 
               value={note} 
@@ -228,11 +226,11 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
           <button 
             onClick={handleComplete}
             disabled={isSaving}
-            className={`w-full py-4 rounded-2xl text-white text-[17px] font-extrabold shadow-[0_4px_16px_rgba(22,163,74,0.35)] transition-all flex items-center justify-center gap-2 ${isSaving ? 'bg-gray-400' : 'bg-primary-600 hover:bg-primary-700'}`}
+            className={`w-full py-4 rounded-none text-white text-[17px] font-extrabold shadow-[0_4px_16px_rgba(22,163,74,0.35)] transition-all flex items-center justify-center gap-2 ${isSaving ? 'bg-gray-400' : 'bg-primary-600 hover:bg-primary-700'}`}
           >
             <span>🙏</span> {isSaving ? '저장 중...' : '기도 완료'}
           </button>
-          <p className="text-center text-gray-400 text-xs mt-1">타이머 진행과 무관하게 언제든 기도를 완료할 수 있습니다.</p>
+          <p className="text-center text-white/60 text-xs mt-1">타이머 진행과 무관하게 언제든 기도를 완료할 수 있습니다.</p>
         </motion.div>
       </div>
     </div>
