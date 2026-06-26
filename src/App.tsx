@@ -11,6 +11,9 @@ import NewsScreen from './components/screens/NewsScreen';
 import PrayerScreen from './components/screens/PrayerScreen';
 import AdminScreen from './components/screens/AdminScreen';
 import AnalyticsTracker from './components/AnalyticsTracker';
+import TeamSelectionScreen from './components/screens/TeamSelectionScreen';
+import OutreachNameInputScreen from './components/screens/OutreachNameInputScreen';
+import OutreachPrayerAppScreen from './components/screens/OutreachPrayerAppScreen';
 
 import { PrayerProvider } from './context/PrayerContext';
 import { NewsProvider } from './context/NewsContext';
@@ -29,6 +32,8 @@ const mainTabs: { id: Tab; label: string; icon: React.FC<any> }[] = [
 function App() {
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(true);
+  const [teamSelected, setTeamSelected] = useState<'outreach' | 'intercessory' | null>(() => localStorage.getItem('flowing_team') as any || null);
+  const [outreachName, setOutreachName] = useState<string | null>(() => localStorage.getItem('flowing_outreach_name') || null);
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [isAdmin, setIsAdmin] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
@@ -48,9 +53,24 @@ function App() {
     }
   };
 
+  const handleSelectTeam = (team: 'outreach' | 'intercessory') => {
+    setTeamSelected(team);
+    localStorage.setItem('flowing_team', team);
+  };
+
+  const handleNameSubmit = (name: string) => {
+    setOutreachName(name);
+    localStorage.setItem('flowing_outreach_name', name);
+  };
+
+  const handleResetTeam = () => {
+    setTeamSelected(null);
+    localStorage.removeItem('flowing_team');
+  };
+
   // Auto-switch between BGM and home video based on active tab
   useEffect(() => {
-    if (showOnboarding) return;
+    if (showOnboarding || teamSelected === 'outreach' || !teamSelected) return;
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -62,7 +82,7 @@ function App() {
       audio.muted = false;
       audio.play().catch(e => console.log('BGM play error:', e));
     }
-  }, [activeTab, showOnboarding]);
+  }, [activeTab, showOnboarding, teamSelected]);
 
   const handleOpenAdmin = () => {
     setIsAdmin(true);
@@ -121,6 +141,14 @@ function App() {
                 <SplashScreen key="splash" />
               ) : showOnboarding ? (
                 <OnboardingScreen key="onboarding" onFinish={handleFinishOnboarding} />
+              ) : !teamSelected ? (
+                <TeamSelectionScreen key="team-selection" onSelectTeam={handleSelectTeam} />
+              ) : teamSelected === 'outreach' ? (
+                !outreachName ? (
+                  <OutreachNameInputScreen key="name-input" onSubmit={handleNameSubmit} onBack={handleResetTeam} />
+                ) : (
+                  <OutreachPrayerAppScreen key="prayer-app" name={outreachName} onBack={handleResetTeam} />
+                )
               ) : (
                 <motion.div
                   key="main-app"
