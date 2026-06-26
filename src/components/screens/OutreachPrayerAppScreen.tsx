@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 interface OutreachPrayerAppScreenProps {
+  teamType: 'outreach' | 'intercessory';
   name: string;
   onBack: () => void;
 }
@@ -14,7 +15,7 @@ const PRAYER_TOPICS = [
   { category: "DAY 5", title: "모든 팀원들의 건강과 안전을 지켜주시고 기쁨으로 섬기게 하소서.", verse: "빌립보서 4:4 - 주 안에서 항상 기뻐하라 내가 다시 말하노니 기뻐하라", prayer: "지치지 않는 새 힘을 허락하시고, 모든 발걸음마다 기쁨이 넘치게 하소서." }
 ];
 
-const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ name, onBack }) => {
+const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamType, name, onBack }) => {
   const today = new Date();
   const dayIndex = (today.getDate() - 1) % PRAYER_TOPICS.length;
   const currentTopic = PRAYER_TOPICS[dayIndex];
@@ -96,7 +97,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ name,
         <div className="absolute bottom-8 left-6 right-6 z-10">
           <div className="text-primary-300 text-xs font-bold mb-2 tracking-wide">{dateStr}</div>
           <div className="text-white text-2xl font-semibold leading-snug">
-            오늘 <span className="font-extrabold text-primary-400 text-3xl">{name}</span> 님이<br/>기도하실 제목
+            오늘 <span className="font-extrabold text-primary-400 text-3xl">{name}</span> 님이<br/>기도하실 {teamType === 'outreach' ? '아웃리치' : '중보기도'} 제목
           </div>
         </div>
       </div>

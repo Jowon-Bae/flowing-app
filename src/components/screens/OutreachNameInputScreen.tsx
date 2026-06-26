@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface OutreachNameInputScreenProps {
+  teamType: 'outreach' | 'intercessory';
   onSubmit: (name: string) => void;
   onBack: () => void;
 }
 
-const OutreachNameInputScreen: React.FC<OutreachNameInputScreenProps> = ({ onSubmit, onBack }) => {
+const OutreachNameInputScreen: React.FC<OutreachNameInputScreenProps> = ({ teamType, onSubmit, onBack }) => {
   const [name, setName] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -31,8 +32,10 @@ const OutreachNameInputScreen: React.FC<OutreachNameInputScreenProps> = ({ onSub
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm text-center mb-10"
         >
-          <div className="text-5xl mb-6">✈️</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">아웃리치 팀</h1>
+          <div className="text-5xl mb-6">{teamType === 'outreach' ? '✈️' : '🙏'}</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">
+            {teamType === 'outreach' ? '아웃리치 팀' : '중보기도 팀'}
+          </h1>
           <p className="text-gray-500 text-sm leading-relaxed">
             기도 어플에 사용할<br/>
             이름을 입력해주세요.
