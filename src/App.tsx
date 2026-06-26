@@ -140,13 +140,13 @@ function App() {
                 <OnboardingScreen key="onboarding" onFinish={handleFinishOnboarding} />
               ) : !teamSelected ? (
                 <TeamSelectionScreen key="team-selection" onSelectTeam={handleSelectTeam} />
-              ) : teamSelected === 'intercessory' ? (
+              ) : teamSelected === 'outreach' ? (
                 !outreachName ? (
                   <OutreachNameInputScreen key="name-input" teamType={teamSelected} onSubmit={handleNameSubmit} onBack={handleResetTeam} />
                 ) : (
                   <UnitedCampAppLayout key="prayer-app" teamType={teamSelected} name={outreachName} onBack={handleResetTeam} />
                 )
-              ) : teamSelected === 'outreach' ? (
+              ) : teamSelected === 'intercessory' ? (
                 <motion.div
                   key="main-app"
                   initial={{ opacity: 0 }}
