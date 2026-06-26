@@ -34,17 +34,17 @@ const TeamSelectionScreen: React.FC<TeamSelectionScreenProps> = ({ onSelectTeam 
         className="w-full max-w-sm flex flex-col gap-4"
       >
         <button 
-          onClick={() => onSelectTeam('intercessory')}
-          className="w-full bg-white text-gray-900 py-4 px-6 rounded-2xl font-bold text-lg shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition-colors"
-        >
-          Send 중보기도 팀
-        </button>
-        
-        <button 
           onClick={() => onSelectTeam('outreach')}
           className="w-full bg-primary-50 text-primary-700 py-4 px-6 rounded-2xl font-bold text-lg border border-primary-200 flex items-center justify-center hover:bg-primary-100 transition-colors"
         >
           Go 아웃리치 팀
+        </button>
+        
+        <button 
+          onClick={() => onSelectTeam('intercessory')}
+          className="w-full bg-white text-gray-900 py-4 px-6 rounded-2xl font-bold text-lg shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition-colors"
+        >
+          Send 중보기도 팀
         </button>
       </motion.div>
     </div>
