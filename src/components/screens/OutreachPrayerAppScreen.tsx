@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 interface OutreachPrayerAppScreenProps {
   teamType: 'outreach' | 'intercessory';
@@ -25,6 +27,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
   const [isRunning, setIsRunning] = useState(false);
   const [note, setNote] = useState('');
   const [completed, setCompleted] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -42,6 +45,31 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
     const m = Math.floor(seconds / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     return `${m}:${s}`;
+  };
+
+  const handleComplete = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      const duration = 600 - timer; // time spent praying
+      const dateKey = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+      
+      await addDoc(collection(db, 'flowing_prayers'), {
+        name,
+        teamType,
+        date: dateKey,
+        duration,
+        note: note.trim(),
+        createdAt: serverTimestamp()
+      });
+      setCompleted(true);
+    } catch (e) {
+      console.error('Error saving prayer:', e);
+      // Even if it fails, let them see the completion screen
+      setCompleted(true);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const progress = ((600 - timer) / 600) * 100;
@@ -198,10 +226,11 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
           </div>
           
           <button 
-            onClick={() => setCompleted(true)}
-            className="w-full py-4 rounded-2xl bg-primary-600 text-white text-[17px] font-extrabold shadow-[0_4px_16px_rgba(22,163,74,0.35)] hover:bg-primary-700 transition-all flex items-center justify-center gap-2"
+            onClick={handleComplete}
+            disabled={isSaving}
+            className={`w-full py-4 rounded-2xl text-white text-[17px] font-extrabold shadow-[0_4px_16px_rgba(22,163,74,0.35)] transition-all flex items-center justify-center gap-2 ${isSaving ? 'bg-gray-400' : 'bg-primary-600 hover:bg-primary-700'}`}
           >
-            <span>🙏</span> 기도 완료
+            <span>🙏</span> {isSaving ? '저장 중...' : '기도 완료'}
           </button>
           <p className="text-center text-gray-400 text-xs mt-1">타이머 진행과 무관하게 언제든 기도를 완료할 수 있습니다.</p>
         </motion.div>

@@ -13,7 +13,7 @@ import AdminScreen from './components/screens/AdminScreen';
 import AnalyticsTracker from './components/AnalyticsTracker';
 import TeamSelectionScreen from './components/screens/TeamSelectionScreen';
 import OutreachNameInputScreen from './components/screens/OutreachNameInputScreen';
-import OutreachPrayerAppScreen from './components/screens/OutreachPrayerAppScreen';
+import UnitedCampAppLayout from './components/screens/UnitedCampAppLayout';
 
 import { PrayerProvider } from './context/PrayerContext';
 import { NewsProvider } from './context/NewsContext';
@@ -144,7 +144,7 @@ function App() {
                 !outreachName ? (
                   <OutreachNameInputScreen key="name-input" teamType={teamSelected} onSubmit={handleNameSubmit} onBack={handleResetTeam} />
                 ) : (
-                  <OutreachPrayerAppScreen key="prayer-app" teamType={teamSelected} name={outreachName} onBack={handleResetTeam} />
+                  <UnitedCampAppLayout key="prayer-app" teamType={teamSelected} name={outreachName} onBack={handleResetTeam} />
                 )
               ) : (
                 <motion.div
