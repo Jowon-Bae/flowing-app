@@ -277,7 +277,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
           >
             <span>🙏</span> {isSaving ? '저장 중...' : '기도 완료'}
           </button>
-          <p className="text-center text-white/60 text-xs mt-1">타이머 진행과 무관하게 언제든 기도를 완료할 수 있습니다.</p>
+          <p className="text-center text-white/70 text-xs mt-2 font-medium">타이머 없이도 기도 완료를 기록할 수 있어요</p>
         </motion.div>
       </div>
     </div>
