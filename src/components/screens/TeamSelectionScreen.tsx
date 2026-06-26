@@ -14,13 +14,9 @@ const TeamSelectionScreen: React.FC<TeamSelectionScreenProps> = ({ onSelectTeam 
         className="w-full max-w-sm text-center mb-10"
       >
         <img 
-          src={`${import.meta.env.BASE_URL}app_logo.jpeg`} 
-          alt="Logo" 
-          className="w-16 h-16 rounded-2xl mx-auto mb-6 shadow-md object-cover"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = `${import.meta.env.BASE_URL}app_logo.png`;
-          }}
+          src={`${import.meta.env.BASE_URL}load_logo_black.png`} 
+          alt="Seoul Dream Church Logo" 
+          className="w-16 h-16 rounded-2xl mx-auto mb-6 drop-shadow-sm object-contain"
         />
         <h1 className="text-2xl font-bold text-gray-900 mb-3">환영합니다</h1>
         <p className="text-gray-500 text-sm leading-relaxed">
