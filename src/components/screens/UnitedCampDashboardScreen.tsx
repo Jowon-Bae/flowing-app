@@ -16,6 +16,31 @@ interface PrayerRecord {
 
 const TOTAL_GOAL_MINUTES = 27000; // From United Camp (90 teachers * 30 days * 10 mins)
 
+const TEAM_MEMBERS = [
+  '배주원', '이지은', '배이안',
+  '김승준', '김규도',
+  '이성재', '이정안',
+  '지석민', '정지혜', '지윤호', '지윤나',
+  '조성국', '임지영', '조수빈', '조수영',
+  '조재범', '한가영', '조제인', '조제니',
+  '심지영', '김기천', '김아인', '김이안',
+  '최인', '이미리',
+  '김사무엘', '이미영', '김희상',
+  '백산', '백민경', '백하루', '백하율', '백하임',
+  '김의태', '김길문',
+  '박상욱', '권성희', '박주아', '박세아',
+  '송나래', '김석', '김율',
+  '김진수', '유재경', '김차율',
+  '정진아', '김루카스', '김재스퍼',
+  '김민우', '김도윤',
+  '박규태', '김도희',
+  '유원상', '박현경', '유예리',
+  '허시원', '허예담',
+  '안지원', '송유섭', '전영지', '신종원', '신대환',
+  '김요한', '장한울', '오준호', '조성수', '김기환',
+  '천에녹', '양승호', '서민경'
+];
+
 const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ teamType }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [records, setRecords] = useState<PrayerRecord[]>([]);
@@ -122,16 +147,27 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
         {/* Teachers */}
         <div className="bg-white border border-gray-100 rounded-[16px] p-5 mb-5 shadow-sm">
           <div className="text-[14px] font-bold text-gray-800 mb-2">👩‍🏫 팀원 기도 현황</div>
-          <div className="text-[13px] text-gray-500 mb-4">오늘 총 {records.length}명이 기도에 동참했습니다.</div>
-          <div className="grid grid-cols-4 gap-3">
-            {records.map(record => (
-              <div key={record.id} className="flex flex-col items-center gap-1.5 p-2 bg-gray-50 rounded-xl">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-600 to-primary-400 text-white flex items-center justify-center text-sm font-bold shadow-sm">
-                  {record.name.charAt(0)}
+          <div className="text-[13px] text-gray-500 mb-4">
+            전체 {TEAM_MEMBERS.length}명 중 <span className="font-bold text-primary-600">{records.length}명</span>이 기도에 동참했습니다.
+          </div>
+          <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
+            {TEAM_MEMBERS.map((member, index) => {
+              const hasPrayed = records.some(r => r.name === member);
+              return (
+                <div key={`${member}-${index}`} className="flex flex-col items-center gap-1.5 p-2 bg-gray-50 rounded-xl">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm transition-all ${
+                    hasPrayed 
+                      ? 'bg-gradient-to-br from-primary-600 to-primary-400 text-white border-2 border-primary-200' 
+                      : 'bg-gray-200 text-gray-400 opacity-60'
+                  }`}>
+                    {member.charAt(0)}
+                  </div>
+                  <div className={`text-[12px] truncate w-full text-center ${hasPrayed ? 'font-bold text-gray-800' : 'font-medium text-gray-400'}`}>
+                    {member}
+                  </div>
                 </div>
-                <div className="text-[12px] font-medium text-gray-700 truncate w-full text-center">{record.name}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
