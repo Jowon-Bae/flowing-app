@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Heart, BarChart2, Settings } from 'lucide-react';
 import OutreachPrayerAppScreen from './OutreachPrayerAppScreen';
 import UnitedCampDashboardScreen from './UnitedCampDashboardScreen';
 import UnitedCampAdminScreen from './UnitedCampAdminScreen';
@@ -21,29 +23,36 @@ const UnitedCampAppLayout: React.FC<UnitedCampAppLayoutProps> = ({ teamType, nam
       </div>
 
       {/* Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-black/85 backdrop-blur-xl border-t border-gray-800 flex z-50 pb-safe">
-        <button 
-          onClick={() => setActiveTab('prayer')}
-          className={`flex-1 flex flex-col items-center py-2.5 transition-colors ${activeTab === 'prayer' ? 'text-primary-300' : 'text-gray-500'}`}
-        >
-          <span className="text-[22px] mb-0.5">🙏</span>
-          <span className="text-[11px] font-medium">기도하기</span>
-        </button>
-        <button 
-          onClick={() => setActiveTab('dashboard')}
-          className={`flex-1 flex flex-col items-center py-2.5 transition-colors ${activeTab === 'dashboard' ? 'text-primary-300' : 'text-gray-500'}`}
-        >
-          <span className="text-[22px] mb-0.5">📊</span>
-          <span className="text-[11px] font-medium">현황</span>
-        </button>
-        <button 
-          onClick={() => setActiveTab('admin')}
-          className={`flex-1 flex flex-col items-center py-2.5 transition-colors ${activeTab === 'admin' ? 'text-primary-300' : 'text-gray-500'}`}
-        >
-          <span className="text-[22px] mb-0.5">⚙️</span>
-          <span className="text-[11px] font-medium">관리</span>
-        </button>
-      </nav>
+      <div className="absolute bottom-0 left-0 right-0 h-[80px] bg-white border-t border-gray-100 flex items-center justify-around px-2 z-50">
+        {[
+          { id: 'prayer', label: '기도하기', icon: Heart },
+          { id: 'dashboard', label: '현황', icon: BarChart2 },
+          { id: 'admin', label: '관리', icon: Settings }
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as 'prayer' | 'dashboard' | 'admin')}
+              className={`flex flex-col items-center justify-center w-20 h-full transition-colors ${
+                isActive ? 'text-slate-700' : 'text-slate-400 hover:text-slate-500'
+              }`}
+            >
+              <motion.div
+                initial={false}
+                animate={{ y: isActive ? -2 : 0, scale: isActive ? 1.05 : 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              >
+                <Icon size={24} strokeWidth={isActive ? 2 : 1.75} />
+              </motion.div>
+              <span className={`text-[11px] mt-1.5 font-medium transition-opacity ${isActive ? 'opacity-100 font-bold' : 'opacity-80'}`}>
+                {tab.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };
