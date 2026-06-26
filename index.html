@@ -1,24 +1,561 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="apple-touch-icon" href="/src/assets/app_logo.jpeg">
-    <link rel="icon" href="/src/assets/app_logo.jpeg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="2026 SDC 고난주간 묵상 컨텐츠">
-    <title>2026 SDC 고난주간 묵상 컨텐츠</title>
-    <!-- Preconnect for performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Kakao SDK -->
-    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js" integrity="sha384-l6SSTf0fV42lZeD8BnxvN4n3Dk73KAn6a22xS7n03zLNo0qGqZ7vA6K8fI3DkE9n" crossorigin="anonymous"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <title>Flowing — 필리핀 아웃리치</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html,body{height:100%;background:#111;font-family:'Noto Sans KR',-apple-system,'Apple SD Gothic Neo',sans-serif;}
+    ::-webkit-scrollbar{display:none;}
+    button{border:none;background:none;cursor:pointer;font-family:inherit;}
+
+    /* ── Loading screen ── */
+    @keyframes spin3d {
+      0%   { transform: perspective(600px) rotateY(0deg)   rotateX(15deg); }
+      25%  { transform: perspective(600px) rotateY(180deg)  rotateX(-10deg); }
+      50%  { transform: perspective(600px) rotateY(360deg)  rotateX(15deg); }
+      75%  { transform: perspective(600px) rotateY(540deg)  rotateX(-10deg); }
+      100% { transform: perspective(600px) rotateY(720deg)  rotateX(15deg); }
+    }
+    @keyframes loadFadeOut {
+      0%   { opacity:1; }
+      100% { opacity:0; pointer-events:none; }
+    }
+    .logo-spin {
+      animation: spin3d 2.4s cubic-bezier(.4,.0,.2,1) forwards;
+    }
+    .loading-exit {
+      animation: loadFadeOut .5s ease .1s forwards;
+    }
+
+    /* ── General ── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+    .fade-up{animation:fadeUp .4s ease-out both;}
+    .s1{animation-delay:.05s;} .s2{animation-delay:.1s;} .s3{animation-delay:.15s;}
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useEffect}=React;
+
+/* ═══ COLORS ═══ */
+const C={
+  dark:'#0d1a12',card:'#ffffff',
+  accent:'#22c55e',accentDark:'#16a34a',accentMint:'#86efac',accentBg:'#f0fdf4',
+  text:'#111827',sub:'#6b7280',border:'#f3f4f6',bg:'#f5f5f5',
+};
+
+/* ═══ LOADING SCREEN ═══ */
+function LoadingScreen({onDone}){
+  const[exiting,setExiting]=useState(false);
+
+  useEffect(()=>{
+    // spin3d is 2.4s, then wait a beat, then fade out
+    const t1=setTimeout(()=>setExiting(true), 2800);
+    const t2=setTimeout(()=>onDone(), 3400);
+    return()=>{clearTimeout(t1);clearTimeout(t2);};
+  },[]);
+
+  return(
+    <div className={exiting?'loading-exit':''}
+      style={{position:'fixed',inset:0,zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}}>
+      {/* Background image */}
+      <img src="images/loading.jpg" style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}} alt=""/>
+      {/* Dark overlay */}
+      <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,.45)'}}/>
+      {/* Logo with 3D spin */}
+      <div className="logo-spin" style={{position:'relative',zIndex:1,transformStyle:'preserve-3d',backfaceVisibility:'visible'}}>
+        <img src="images/load_logo.png" alt="Flowing"
+          style={{width:90,height:90,objectFit:'contain',filter:'drop-shadow(0 8px 30px rgba(0,0,0,.5))'}}/>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ PHOTO HERO (with real image) ═══ */
+function PhotoHero({src,h=280,children,fallbackGrad='linear-gradient(160deg,#0a2415,#2d6a4f)'}){
+  return(
+    <div style={{position:'relative',height:h,overflow:'hidden',background:fallbackGrad}}>
+      {src&&<img src={src} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}} alt=""/>}
+      <div style={{position:'absolute',bottom:0,left:0,right:0,height:'70%',background:'linear-gradient(to top,rgba(0,0,0,.75),transparent)'}}/>
+      {children}
+    </div>
+  );
+}
+
+/* ═══ HOME ═══ */
+function HomeTab({setActiveTab}){
+  return(
+    <div style={{background:C.bg,minHeight:'100%'}}>
+      {/* HERO */}
+      <PhotoHero src="images/hero.jpg" h={420}>
+        <div style={{position:'absolute',top:52,left:20,display:'flex',alignItems:'center',gap:8}}>
+          <img src="images/logo.png" style={{width:28,height:28,borderRadius:6,objectFit:'contain'}} alt=""/>
+          <span style={{color:'rgba(255,255,255,.85)',fontSize:11,fontWeight:600,letterSpacing:'.1em'}}>SEOUL DREAM CHURCH</span>
+        </div>
+        <div style={{position:'absolute',bottom:32,left:20,right:20}}>
+          <div style={{color:C.accentMint,fontSize:12,fontWeight:700,letterSpacing:'.15em',textTransform:'uppercase',marginBottom:8}}>Philippines Outreach 2025</div>
+          <div style={{color:'#fff',fontSize:36,fontWeight:900,lineHeight:1.1,letterSpacing:'-1px',marginBottom:6}}>
+            사랑이<br/>흘러갑니다
+          </div>
+          <div style={{color:'rgba(255,255,255,.65)',fontSize:14,fontWeight:400,lineHeight:1.6}}>
+            마닐라 Tondo 지역 아이들에게<br/>당신의 사랑이 닿을 수 있어요
+          </div>
+          <div style={{display:'flex',gap:10,marginTop:20}}>
+            <button onClick={()=>setActiveTab('support')}
+              style={{flex:1,background:C.accent,color:'#fff',fontWeight:700,fontSize:13,padding:'12px 0',borderRadius:12}}>
+              후원 물품 보기
+            </button>
+            <button onClick={()=>setActiveTab('prayer')}
+              style={{flex:1,background:'rgba(255,255,255,.15)',color:'#fff',fontWeight:600,fontSize:13,padding:'12px 0',borderRadius:12,backdropFilter:'blur(8px)'}}>
+              기도로 동참
+            </button>
+          </div>
+        </div>
+      </PhotoHero>
+
+      {/* STATS */}
+      <div style={{background:'#fff',padding:'20px 20px',display:'flex',borderBottom:`1px solid ${C.border}`}}>
+        {[{num:'8일',label:'사역 기간'},{num:'200+',label:'섬길 어린이'},{num:'30명',label:'아웃리치팀'},{num:'5개',label:'사역 현장'}].map((s,i)=>(
+          <div key={i} style={{flex:1,textAlign:'center',borderRight:i<3?`1px solid ${C.border}`:'none'}}>
+            <div style={{color:C.accentDark,fontSize:20,fontWeight:900}}>{s.num}</div>
+            <div style={{color:C.sub,fontSize:10,marginTop:2,fontWeight:500}}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* LATEST UPDATE */}
+      <div style={{padding:'24px 20px 0'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
+          <div style={{color:C.text,fontWeight:900,fontSize:18}}>최근 소식</div>
+          <div style={{color:C.accentDark,fontSize:12,fontWeight:600}}>전체 보기 →</div>
+        </div>
+        <div style={{background:'#fff',borderRadius:20,overflow:'hidden',boxShadow:'0 2px 16px rgba(0,0,0,.07)'}}>
+          <div style={{height:160,background:'linear-gradient(135deg,#1a3a1f,#40916c)',position:'relative'}}>
+            <img src="images/hero.jpg" style={{width:'100%',height:'100%',objectFit:'cover',opacity:.8}} alt=""/>
+            <div style={{position:'absolute',top:14,left:14,background:'rgba(255,255,255,.18)',borderRadius:20,padding:'4px 12px',backdropFilter:'blur(4px)'}}>
+              <span style={{color:'#fff',fontSize:10,fontWeight:700,letterSpacing:'.1em'}}>UPDATE</span>
+            </div>
+          </div>
+          <div style={{padding:'18px 18px 20px'}}>
+            <div style={{color:C.sub,fontSize:11,fontWeight:600,marginBottom:6}}>2025년 7월 3일</div>
+            <div style={{color:C.text,fontWeight:800,fontSize:16,lineHeight:1.35,marginBottom:8}}>후원 물품 모금이 시작되었습니다!</div>
+            <div style={{color:C.sub,fontSize:13,lineHeight:1.65}}>
+              7월 14일 필리핀 마닐라 Tondo 지역 아이들을 위한 아웃리치가 시작됩니다. 200여 명의 아이들에게 사랑을 전할 물품 후원에 동참해 주세요.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* WHERE WE GO */}
+      <div style={{padding:'28px 20px 0'}}>
+        <div style={{color:C.text,fontWeight:900,fontSize:18,marginBottom:14}}>어디로 가나요?</div>
+        <div style={{background:'#fff',borderRadius:20,overflow:'hidden',boxShadow:'0 2px 16px rgba(0,0,0,.07)'}}>
+          <div style={{height:140,background:'linear-gradient(135deg,#e8f5e9,#c8e6c9)',position:'relative',display:'flex',alignItems:'center',justifyContent:'center'}}>
+            <div style={{textAlign:'center'}}>
+              <div style={{fontSize:32}}>🗺️</div>
+              <div style={{color:'#2d6a4f',fontWeight:700,fontSize:13,marginTop:4}}>Manila, Philippines</div>
+              <div style={{color:'#52b788',fontSize:11}}>Tondo District</div>
+            </div>
+          </div>
+          <div style={{padding:'16px 18px 20px'}}>
+            <div style={{color:C.text,fontWeight:800,fontSize:15,marginBottom:6}}>필리핀 마닐라 Tondo 지역</div>
+            <div style={{color:C.sub,fontSize:13,lineHeight:1.65}}>
+              마닐라 북부에 위치한 Tondo는 필리핀에서 가장 인구 밀도가 높은 지역 중 하나입니다. 많은 아이들이 교육과 기본 생필품이 필요한 환경에서 자라고 있습니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* HOW TO PARTICIPATE */}
+      <div style={{padding:'28px 20px 28px'}}>
+        <div style={{color:C.text,fontWeight:900,fontSize:18,marginBottom:14}}>어떻게 참여할 수 있나요?</div>
+        <div style={{display:'flex',flexDirection:'column',gap:10}}>
+          {[
+            {emoji:'📦',title:'물품 후원',desc:'필요한 물품 목록을 보고 직접 후원해요',tab:'support'},
+            {emoji:'🙏',title:'기도로 동참',desc:'함께 기도하며 사역을 응원해요',tab:'prayer'},
+            {emoji:'📖',title:'아웃리치 소개',desc:'이 사역이 왜 중요한지 알아보아요',tab:'about'},
+          ].map((item,i)=>(
+            <button key={i} onClick={()=>setActiveTab(item.tab)}
+              style={{display:'flex',alignItems:'center',gap:14,background:'#fff',borderRadius:16,padding:'16px 18px',boxShadow:'0 1px 8px rgba(0,0,0,.05)',textAlign:'left',border:`1px solid ${C.border}`}}>
+              <div style={{width:44,height:44,borderRadius:12,background:C.accentBg,border:'1px solid #bbf7d0',display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,flexShrink:0}}>{item.emoji}</div>
+              <div style={{flex:1}}>
+                <div style={{color:C.text,fontWeight:700,fontSize:14}}>{item.title}</div>
+                <div style={{color:C.sub,fontSize:12,marginTop:2}}>{item.desc}</div>
+              </div>
+              <div style={{color:'#d1d5db',fontSize:18}}>›</div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ ABOUT ═══ */
+function AboutTab(){
+  const[openFaq,setOpenFaq]=useState(null);
+  const faqs=[
+    {q:'아웃리치가 무엇인가요?',a:"'아웃리치(Outreach)'는 복음과 사랑을 필요한 지역에 직접 찾아가 전하는 단기 선교 활동입니다. 단순한 봉사를 넘어, 지역 교회와 협력하여 지속 가능한 사랑의 흔적을 남기는 것이 목표입니다."},
+    {q:'서울드림교회는 어떤 교회인가요?',a:'서울드림교회는 서울에 위치한 교회로, 지역 사회와 세계 선교에 헌신하며 섬기는 공동체입니다. 매년 다양한 선교 활동을 통해 하나님의 사랑을 나눕니다.'},
+    {q:"'Flowing'이라는 이름은 무슨 뜻인가요?",a:"'Flowing'은 하나님의 사랑이 우리를 통해 흘러간다는 의미를 담고 있습니다. 우리가 받은 사랑이 필리핀 아이들에게 흘러가고, 또 그 사랑이 계속 흘러가기를 바라는 마음을 담았습니다."},
+    {q:'현지 어떤 기관과 협력하나요?',a:'마닐라 Tondo 지역의 Grace of God Church와 협력합니다. 20년 넘게 이 지역에서 봉사해 온 현지 교회와 함께 사역함으로써 더 깊고 지속적인 영향을 만들어 갑니다.'},
+  ];
+
+  return(
+    <div style={{background:C.bg,minHeight:'100%'}}>
+      <PhotoHero src="images/about.jpg" h={360}>
+        <div style={{position:'absolute',top:52,left:20}}>
+          <div style={{color:C.accentMint,fontSize:11,fontWeight:700,letterSpacing:'.15em',textTransform:'uppercase'}}>About Flowing</div>
+        </div>
+        <div style={{position:'absolute',bottom:36,left:20,right:20}}>
+          <div style={{color:'#fff',fontSize:30,fontWeight:900,lineHeight:1.15,letterSpacing:'-1px',marginBottom:10}}>왜 필리핀인가요?</div>
+          <div style={{color:'rgba(255,255,255,.7)',fontSize:14,lineHeight:1.65}}>
+            마닐라 Tondo의 아이들은 기본 교육과 생필품이 부족한 환경에서 자라고 있습니다. 하나님의 사랑을 직접 전하러 갑니다.
+          </div>
+        </div>
+      </PhotoHero>
+
+      {/* Mission */}
+      <div style={{background:'#fff',padding:'28px 20px',borderBottom:`1px solid ${C.border}`}}>
+        <div style={{color:C.accentDark,fontSize:11,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',marginBottom:10}}>Our Mission</div>
+        <div style={{color:C.text,fontSize:20,fontWeight:900,lineHeight:1.35,letterSpacing:'-0.5px'}}>
+          "선을 행하되 낙심하지 말지니 포기하지 아니하면 때가 이르매 거두리라"
+        </div>
+        <div style={{color:C.sub,fontSize:12,marginTop:10,fontWeight:500}}>갈라디아서 6:9</div>
+      </div>
+
+      {/* Story cards */}
+      <div style={{padding:'24px 20px 0'}}>
+        <div style={{color:C.text,fontWeight:900,fontSize:18,marginBottom:16}}>현지 이야기</div>
+        {[
+          {img:'images/about.jpg',tag:'현지 상황',title:'Tondo의 아이들',body:'필리핀 마닐라의 Tondo는 아시아에서 가장 인구 밀도가 높은 빈곤 지역 중 하나입니다. 이곳의 아이들은 학교 교육에 필요한 기본 문구류조차 부족한 경우가 많습니다.'},
+          {img:'images/hero.jpg',tag:'파트너십',title:'Grace of God Church 와의 협력',body:'20년 이상 Tondo 지역에서 사역해 온 현지 교회와 협력하여, 아웃리치 이후에도 지속적인 돌봄이 이어질 수 있도록 합니다.'},
+        ].map((s,i)=>(
+          <div key={i} style={{background:'#fff',borderRadius:20,overflow:'hidden',boxShadow:'0 2px 16px rgba(0,0,0,.07)',marginBottom:14}}>
+            <div style={{height:150,position:'relative',overflow:'hidden'}}>
+              <img src={s.img} style={{width:'100%',height:'100%',objectFit:'cover'}} alt=""/>
+              <div style={{position:'absolute',top:14,left:14,background:'rgba(0,0,0,.45)',borderRadius:20,padding:'4px 12px',backdropFilter:'blur(4px)'}}>
+                <span style={{color:'#fff',fontSize:10,fontWeight:700,letterSpacing:'.08em'}}>{s.tag}</span>
+              </div>
+            </div>
+            <div style={{padding:'18px 18px 20px'}}>
+              <div style={{color:C.text,fontWeight:800,fontSize:16,marginBottom:8}}>{s.title}</div>
+              <div style={{color:C.sub,fontSize:13,lineHeight:1.7}}>{s.body}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Timeline */}
+      <div style={{padding:'8px 20px 0'}}>
+        <div style={{color:C.text,fontWeight:900,fontSize:18,marginBottom:16}}>아웃리치 일정</div>
+        <div style={{background:'#fff',borderRadius:20,padding:'20px 18px',boxShadow:'0 2px 16px rgba(0,0,0,.07)'}}>
+          {[
+            {date:'7.14(월)',title:'출발 · 마닐라 도착'},
+            {date:'7.15(화)',title:'현지 적응 · 파트너 교회 방문'},
+            {date:'7.16~19',title:'본격 사역 · 아동 예배 · 의료봉사'},
+            {date:'7.20(일)',title:'연합 주일 예배 · 지역사회 섬김'},
+            {date:'7.21(월)',title:'귀국'},
+          ].map((t,i,arr)=>(
+            <div key={i} style={{display:'flex',gap:14,alignItems:'flex-start',paddingBottom:i<arr.length-1?16:0}}>
+              <div style={{display:'flex',flexDirection:'column',alignItems:'center',paddingTop:4,flexShrink:0}}>
+                <div style={{width:10,height:10,borderRadius:'50%',background:i===2?C.accent:'#d1d5db',flexShrink:0}}/>
+                {i<arr.length-1&&<div style={{width:2,height:28,background:'#f3f4f6',marginTop:4}}/>}
+              </div>
+              <div>
+                <div style={{color:C.sub,fontSize:11,fontWeight:600,marginBottom:2}}>{t.date}</div>
+                <div style={{color:C.text,fontWeight:600,fontSize:14}}>{t.title}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* FAQ */}
+      <div style={{padding:'28px 20px 28px'}}>
+        <div style={{color:C.text,fontWeight:900,fontSize:18,marginBottom:14}}>자주 묻는 질문</div>
+        <div style={{display:'flex',flexDirection:'column',gap:8}}>
+          {faqs.map((f,i)=>(
+            <div key={i} style={{background:'#fff',borderRadius:16,overflow:'hidden',boxShadow:'0 1px 8px rgba(0,0,0,.05)'}}>
+              <button onClick={()=>setOpenFaq(openFaq===i?null:i)}
+                style={{width:'100%',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'16px 18px',textAlign:'left',gap:12}}>
+                <span style={{color:C.text,fontWeight:600,fontSize:14,flex:1,lineHeight:1.4}}>{f.q}</span>
+                <span style={{color:'#9ca3af',fontSize:20,flexShrink:0,transition:'transform .2s',transform:openFaq===i?'rotate(45deg)':'none',display:'block'}}>+</span>
+              </button>
+              {openFaq===i&&(
+                <div style={{padding:'0 18px 16px'}}>
+                  <div style={{color:C.sub,fontSize:13,lineHeight:1.7,borderTop:`1px solid ${C.border}`,paddingTop:14}}>{f.a}</div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ SUPPORT ═══ */
+function SupportTab(){
+  const[selected,setSelected]=useState(null);
+
+  const items=[
+    {id:1,emoji:'📚',name:'어린이 교육 키트',
+     desc:'공책, 연필, 크레파스, 가위, 색종이 등 기본 학습에 필요한 물품 세트',
+     why:'Tondo의 많은 아이들이 학용품을 살 여유가 없어 학교에 가고 싶어도 가지 못합니다. 교육 키트 하나가 한 아이의 1년 학습을 도울 수 있습니다.',
+     howUsed:'2024년 아웃리치에서 교육 키트를 받은 아이들의 눈이 반짝였습니다. 키트 하나가 아이들에게 미래에 대한 희망이 됩니다.',
+     needed:200,current:178,unit:'세트',price:'약 1만원/세트',
+     gradient:'linear-gradient(135deg,#1e3a5f,#2563eb)'},
+    {id:2,emoji:'💊',name:'의약품 · 위생 용품',
+     desc:'상비약, 손 소독제, 마스크, 칫솔, 치약, 비누 등 기본 위생 관련 용품',
+     why:'의료 접근성이 낮은 Tondo에서 기본 위생 관리가 어려운 가정이 많습니다. 단순한 위생 습관과 약품이 어린이 사망률을 크게 낮출 수 있습니다.',
+     howUsed:'현지 의료봉사 팀이 혈압 측정, 기본 진료와 함께 위생 교육을 진행합니다. 2024년 의료봉사에서 300여 명을 섬겼습니다.',
+     needed:500,current:423,unit:'세트',price:'약 8천원/세트',
+     gradient:'linear-gradient(135deg,#1b4332,#22c55e)'},
+    {id:3,emoji:'🍚',name:'식료품 패키지',
+     desc:'쌀, 통조림, 라면, 설탕, 식용유 등 1개월 분량의 기본 식료품 묶음',
+     why:'하루 한 끼도 제대로 먹지 못하는 어린이들이 있습니다. 식료품 패키지는 한 가정이 한 달을 버틸 수 있는 기초 식량이 됩니다.',
+     howUsed:'가정 방문 사역 시 직접 전달합니다. 2024년에는 80가정에 식료품을 전달했습니다.',
+     needed:100,current:100,unit:'패키지',price:'약 3만원/패키지',
+     gradient:'linear-gradient(135deg,#78350f,#d97706)'},
+    {id:4,emoji:'👕',name:'의류 · 신발',
+     desc:'어린이 의류(상하의 세트) 및 운동화. 사이즈별로 분류하여 전달합니다.',
+     why:'깨끗한 옷과 신발은 아이들에게 자존감과 학교 출석의 동기가 됩니다.',
+     howUsed:'VBS(어린이 성경학교) 마지막 날 아이들에게 선물로 전달합니다.',
+     needed:150,current:97,unit:'세트',price:'약 2만원/세트',
+     gradient:'linear-gradient(135deg,#4a1d96,#7c3aed)'},
+    {id:5,emoji:'🧸',name:'장난감 · 놀이 교구',
+     desc:'공, 훌라후프, 블록, 퍼즐 등 함께 즐길 수 있는 놀이 용품',
+     why:'놀이는 어린이 발달에 필수적입니다. 하지만 Tondo의 아이들에게 장난감은 사치품입니다.',
+     howUsed:'매일 저녁 팀원들이 아이들과 함께 놀이 시간을 갖습니다. 언어는 달라도 함께 웃고 뛰는 시간은 그 어떤 말보다 강한 사랑을 전합니다.',
+     needed:80,current:42,unit:'세트',price:'약 1.5만원/세트',
+     gradient:'linear-gradient(135deg,#881337,#e11d48)'},
+  ];
+  const totalPct=Math.round((items.reduce((s,i)=>s+i.current,0)/items.reduce((s,i)=>s+i.needed,0))*100);
+
+  return(
+    <div style={{background:C.bg,minHeight:'100%'}}>
+      {/* Header */}
+      <div style={{background:C.dark,padding:'52px 20px 24px'}}>
+        <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}>
+          <img src="images/logo.png" style={{width:24,height:24,borderRadius:4,objectFit:'contain'}} alt=""/>
+          <div style={{color:C.accentMint,fontSize:11,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase'}}>Support Items</div>
+        </div>
+        <div style={{color:'#fff',fontWeight:900,fontSize:26,lineHeight:1.2,letterSpacing:'-0.5px',marginBottom:10}}>
+          어떤 물품이<br/>필요한가요?
+        </div>
+        <div style={{background:'rgba(255,255,255,.08)',borderRadius:16,padding:16,marginTop:4}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+            <span style={{color:'rgba(255,255,255,.7)',fontSize:12,fontWeight:600}}>전체 후원 현황</span>
+            <span style={{color:C.accent,fontWeight:900,fontSize:18}}>{totalPct}%</span>
+          </div>
+          <div style={{height:6,background:'rgba(255,255,255,.12)',borderRadius:3,overflow:'hidden'}}>
+            <div style={{height:'100%',background:C.accent,borderRadius:3,width:`${totalPct}%`}}/>
+          </div>
+        </div>
+      </div>
+
+      {/* Cards */}
+      <div style={{padding:'20px 20px 0'}}>
+        {items.map((item)=>{
+          const pct=Math.round((item.current/item.needed)*100);
+          const done=item.current>=item.needed;
+          const isOpen=selected===item.id;
+          return(
+            <div key={item.id} style={{background:'#fff',borderRadius:20,overflow:'hidden',boxShadow:'0 2px 16px rgba(0,0,0,.07)',marginBottom:14}}>
+              <div style={{position:'relative',height:100,background:item.gradient,display:'flex',alignItems:'center',padding:'0 20px',gap:16}}>
+                <div style={{fontSize:36}}>{item.emoji}</div>
+                <div style={{flex:1}}>
+                  <div style={{color:'rgba(255,255,255,.7)',fontSize:11,fontWeight:600,marginBottom:2}}>후원 물품</div>
+                  <div style={{color:'#fff',fontWeight:800,fontSize:16}}>{item.name}</div>
+                </div>
+                {done&&<div style={{background:'rgba(255,255,255,.2)',borderRadius:20,padding:'4px 10px'}}><span style={{color:'#fff',fontSize:10,fontWeight:700}}>완료 ✓</span></div>}
+              </div>
+              <div style={{padding:'16px 18px'}}>
+                <div style={{color:C.sub,fontSize:13,lineHeight:1.6,marginBottom:14}}>{item.desc}</div>
+                <div style={{marginBottom:14}}>
+                  <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
+                    <span style={{color:C.sub,fontSize:11,fontWeight:600}}>후원 진행률</span>
+                    <span style={{color:done?C.accentDark:C.text,fontWeight:700,fontSize:12}}>{item.current}/{item.needed} {item.unit}</span>
+                  </div>
+                  <div style={{height:8,background:'#f3f4f6',borderRadius:4,overflow:'hidden'}}>
+                    <div style={{height:'100%',background:done?'linear-gradient(90deg,#4ade80,#22c55e)':'linear-gradient(90deg,#22c55e,#86efac)',borderRadius:4,width:`${Math.min(pct,100)}%`}}/>
+                  </div>
+                  <div style={{color:C.sub,fontSize:11,marginTop:4}}>{item.price}</div>
+                </div>
+                <button onClick={()=>setSelected(isOpen?null:item.id)}
+                  style={{width:'100%',background:C.accentBg,borderRadius:10,padding:'10px 14px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                  <span style={{color:C.accentDark,fontWeight:600,fontSize:13}}>왜 이 물품이 필요한가요?</span>
+                  <span style={{color:C.accentDark,fontSize:18,transition:'transform .2s',transform:isOpen?'rotate(180deg)':'none',display:'block'}}>▾</span>
+                </button>
+                {isOpen&&(
+                  <div style={{marginTop:12}}>
+                    <div style={{background:'#f9fafb',borderRadius:12,padding:'14px',marginBottom:10}}>
+                      <div style={{color:C.accentDark,fontSize:10,fontWeight:700,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:6}}>필요한 이유</div>
+                      <div style={{color:'#374151',fontSize:13,lineHeight:1.7}}>{item.why}</div>
+                    </div>
+                    <div style={{background:'#f9fafb',borderRadius:12,padding:'14px'}}>
+                      <div style={{color:C.accentDark,fontSize:10,fontWeight:700,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:6}}>어떻게 사용되나요</div>
+                      <div style={{color:'#374151',fontSize:13,lineHeight:1.7}}>{item.howUsed}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* How to donate */}
+      <div style={{padding:'4px 20px 28px'}}>
+        <div style={{background:C.dark,borderRadius:20,padding:22,position:'relative',overflow:'hidden'}}>
+          <div style={{position:'absolute',top:-20,right:-20,width:120,height:120,borderRadius:'50%',background:'rgba(34,197,94,.08)'}}/>
+          <div style={{color:C.accentMint,fontSize:11,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',marginBottom:10}}>How to Support</div>
+          <div style={{color:'#fff',fontWeight:800,fontSize:16,marginBottom:14}}>후원 방법 안내</div>
+          {[
+            {step:'01',title:'물품 직접 구매 후 교회 전달',desc:'목록을 보고 구매 후 서울드림교회 안내 데스크에 전달해 주세요.'},
+            {step:'02',title:'계좌이체',desc:'국민은행 000-0000-0000-00\n예금주: 서울드림교회 (필리핀 아웃리치)'},
+            {step:'03',title:'문의',desc:'청년부 간사 010-0000-0000'},
+          ].map((s,i)=>(
+            <div key={i} style={{display:'flex',gap:14,marginBottom:i<2?16:0}}>
+              <div style={{color:C.accent,fontWeight:900,fontSize:13,flexShrink:0,width:24}}>{s.step}</div>
+              <div>
+                <div style={{color:'#fff',fontWeight:700,fontSize:13,marginBottom:3}}>{s.title}</div>
+                <div style={{color:'rgba(255,255,255,.55)',fontSize:12,lineHeight:1.6,whiteSpace:'pre-line'}}>{s.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ PRAYER ═══ */
+function PrayerTab(){
+  const[prayers,setPrayers]=useState([
+    {id:1,tag:'아이들을 위해',title:'200명의 아이들의 마음이 열리도록',verse:'마태복음 19:14',verseText:'예수께서 이르시되 어린 아이들을 용납하고 내게 오는 것을 금하지 말라',body:'사역 기간 동안 만나게 될 200여 명의 아이들이 진정한 사랑을 경험하고, 하나님을 향한 마음이 열리도록 함께 기도해 주세요.',count:124,prayed:false},
+    {id:2,tag:'팀을 위해',title:'30명의 팀원 모두가 건강하고 안전하게',verse:'시편 91:11',verseText:'그가 너를 위하여 그의 천사들을 명령하사 네 모든 길에서 너를 지키게 하심이라',body:'7박 8일 간의 사역 여정 동안 팀원 모두가 건강을 지키고, 안전하게 사역할 수 있도록 중보해 주세요.',count:88,prayed:false},
+    {id:3,tag:'후원을 위해',title:'필요한 물품들이 풍성히 채워지도록',verse:'빌립보서 4:19',verseText:'나의 하나님이 그리스도 예수 안에서 영광 가운데 그 풍성한 대로 너희 모든 쓸 것을 채우시리라',body:'아직 부족한 후원 물품들이 넉넉하게 채워져서, 모든 가정에 사랑을 충분히 나눌 수 있도록 기도해 주세요.',count:63,prayed:false},
+    {id:4,tag:'사역지를 위해',title:'Tondo 지역에 지속적인 변화가',verse:'이사야 58:6',verseText:'내가 기뻐하는 금식은 흉악의 결박을 풀어 주며 멍에의 줄을 끌러 주며 압제 당하는 자를 자유하게 하며',body:'일회성 방문이 아닌, 이번 아웃리치가 Tondo 지역에 지속적인 변화의 씨앗이 되도록 기도해 주세요.',count:47,prayed:false},
+    {id:5,tag:'Flowing을 위해',title:"하나님의 사랑이 '흘러가도록'",verse:'요한복음 7:38',verseText:'나를 믿는 자는 성경에 이름과 같이 그 배에서 생수의 강이 흘러나오리라 하시니',body:"'Flowing'의 이름처럼, 우리를 통해 하나님의 사랑이 필리핀 땅 깊은 곳까지 흘러가기를 함께 기도해 주세요.",count:156,prayed:false},
+  ]);
+  const total=prayers.reduce((s,p)=>s+p.count,0);
+  const pray=(id)=>{setPrayers(prev=>prev.map(p=>p.id===id?{...p,prayed:!p.prayed,count:p.prayed?p.count-1:p.count+1}:p));};
+  const tagColors=[{bg:'#fef3c7',color:'#d97706'},{bg:'#dbeafe',color:'#1d4ed8'},{bg:'#f0fdf4',color:'#16a34a'},{bg:'#fce7f3',color:'#be185d'},{bg:'#f3e8ff',color:'#7c3aed'}];
+
+  return(
+    <div style={{background:C.bg,minHeight:'100%'}}>
+      <PhotoHero src="images/about.jpg" h={280}>
+        <div style={{position:'absolute',top:52,left:20}}>
+          <div style={{color:C.accentMint,fontSize:11,fontWeight:700,letterSpacing:'.15em',textTransform:'uppercase'}}>Join in Prayer</div>
+        </div>
+        <div style={{position:'absolute',bottom:28,left:20,right:20}}>
+          <div style={{color:'#fff',fontSize:28,fontWeight:900,lineHeight:1.15,letterSpacing:'-0.5px',marginBottom:8}}>기도로 함께<br/>동참하세요</div>
+          <div style={{color:'rgba(255,255,255,.65)',fontSize:13,lineHeight:1.6}}>현장에 가지 않아도 됩니다.<br/>기도가 가장 강력한 후원입니다.</div>
+        </div>
+      </PhotoHero>
+
+      {/* Counter */}
+      <div style={{background:'#fff',borderBottom:`1px solid ${C.border}`,padding:'18px 20px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        <div>
+          <div style={{color:C.sub,fontSize:11,fontWeight:600}}>지금까지 함께 기도한 횟수</div>
+          <div style={{color:C.text,fontWeight:900,fontSize:28,letterSpacing:'-1px',marginTop:2}}>{total.toLocaleString()}<span style={{color:C.sub,fontSize:14,fontWeight:500,marginLeft:4}}>번</span></div>
+        </div>
+        <div style={{width:52,height:52,borderRadius:14,background:C.accentBg,display:'flex',alignItems:'center',justifyContent:'center',fontSize:26}}>🙏</div>
+      </div>
+
+      {/* Cards */}
+      <div style={{padding:'20px 20px 28px',display:'flex',flexDirection:'column',gap:14}}>
+        {prayers.map((p,i)=>{
+          const tc=tagColors[i%tagColors.length];
+          return(
+            <div key={p.id} style={{background:'#fff',borderRadius:20,overflow:'hidden',boxShadow:'0 2px 16px rgba(0,0,0,.07)'}}>
+              <div style={{height:4,background:p.prayed?C.accent:'#f3f4f6'}}/>
+              <div style={{padding:'18px 18px 20px'}}>
+                <div style={{display:'inline-block',fontSize:11,fontWeight:700,padding:'3px 10px',borderRadius:20,marginBottom:12,background:tc.bg,color:tc.color}}>{p.tag}</div>
+                <div style={{color:C.text,fontWeight:800,fontSize:16,lineHeight:1.35,marginBottom:12}}>{p.title}</div>
+                <div style={{background:C.accentBg,borderRadius:12,padding:'12px 14px',marginBottom:14,borderLeft:`3px solid ${C.accent}`}}>
+                  <div style={{color:C.accentDark,fontSize:11,fontWeight:700,marginBottom:4}}>{p.verse}</div>
+                  <div style={{color:'#374151',fontSize:12,lineHeight:1.6,fontStyle:'italic'}}>"{p.verseText}"</div>
+                </div>
+                <div style={{color:C.sub,fontSize:13,lineHeight:1.7,marginBottom:16}}>{p.body}</div>
+                <button onClick={()=>pray(p.id)}
+                  style={{width:'100%',padding:'13px 0',borderRadius:12,fontWeight:700,fontSize:14,transition:'all .2s',
+                    background:p.prayed?C.accent:'#f9fafb',color:p.prayed?'#fff':C.sub,
+                    boxShadow:p.prayed?'0 4px 16px rgba(34,197,94,.35)':'none',
+                    border:p.prayed?'none':`1px solid ${C.border}`}}>
+                  {p.prayed?`🙏  함께 기도하고 있어요  ·  ${p.count}명`:`🙏  함께 기도하기  ·  ${p.count}명`}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ═══ BOTTOM NAV ═══ */
+function BottomNav({tab,setTab}){
+  const tabs=[
+    {id:'home',label:'홈',d:'M3 9.5L12 3L21 9.5V20C21 20.55 20.55 21 20 21H15V15H9V21H4C3.45 21 3 20.55 3 20V9.5Z'},
+    {id:'about',label:'소개',d:'M12 3a9 9 0 110 18 9 9 0 010-18zm0 5v4m0 4h.01'},
+    {id:'support',label:'후원 물품',d:'M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 5v4m-2-2h4'},
+    {id:'prayer',label:'기도 동참',d:'M12 21s-8-5-8-10.5C4 7.46 6.46 5 9.5 5c1.43 0 2.5.67 2.5.67S13.07 5 14.5 5C17.54 5 20 7.46 20 10.5 20 16 12 21 12 21z'},
+  ];
+  return(
+    <div style={{position:'fixed',bottom:0,left:'50%',transform:'translateX(-50%)',width:'100%',maxWidth:430,background:'rgba(255,255,255,.96)',backdropFilter:'blur(12px)',borderTop:'1px solid rgba(0,0,0,.06)',zIndex:200}}>
+      <div style={{display:'flex'}}>
+        {tabs.map(t=>{
+          const a=tab===t.id;
+          return(
+            <button key={t.id} onClick={()=>setTab(t.id)}
+              style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',padding:'10px 0 8px',gap:3}}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill={a?C.accent:'none'} stroke={a?C.accent:'#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={t.d}/></svg>
+              <span style={{fontSize:9.5,fontWeight:a?700:500,color:a?C.accentDark:'#9ca3af'}}>{t.label}</span>
+              {a&&<div style={{width:4,height:4,borderRadius:2,background:C.accent,marginTop:1}}/>}
+            </button>
+          );
+        })}
+      </div>
+      <div style={{display:'flex',justifyContent:'center',paddingBottom:6}}>
+        <div style={{width:120,height:4,background:'#e5e7eb',borderRadius:2}}/>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ APP ═══ */
+function App(){
+  const[loading,setLoading]=useState(true);
+  const[tab,setTab]=useState('home');
+  return(
+    <div style={{maxWidth:430,margin:'0 auto',minHeight:'100vh',background:C.bg,position:'relative'}}>
+      {loading&&<LoadingScreen onDone={()=>setLoading(false)}/>}
+      {!loading&&(
+        <>
+          <div style={{paddingBottom:80,overflowY:'auto',height:'100vh',WebkitOverflowScrolling:'touch'}}>
+            {tab==='home'&&<HomeTab setActiveTab={setTab}/>}
+            {tab==='about'&&<AboutTab/>}
+            {tab==='support'&&<SupportTab/>}
+            {tab==='prayer'&&<PrayerTab/>}
+          </div>
+          <BottomNav tab={tab} setTab={setTab}/>
+        </>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
 </html>
