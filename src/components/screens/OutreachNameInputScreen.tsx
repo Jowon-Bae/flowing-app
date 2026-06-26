@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { TEAM_MEMBERS } from '../../data/teamMembers';
 
 interface OutreachNameInputScreenProps {
   teamType: 'outreach' | 'intercessory';
@@ -9,11 +10,18 @@ interface OutreachNameInputScreenProps {
 
 const OutreachNameInputScreen: React.FC<OutreachNameInputScreenProps> = ({ teamType, onSubmit, onBack }) => {
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
-      onSubmit(name.trim());
+      const trimmedName = name.trim();
+      if (teamType === 'intercessory' && !TEAM_MEMBERS.includes(trimmedName)) {
+        setError('명단에 등록되지 않은 이름입니다. 다시 확인해주세요.');
+        return;
+      }
+      setError('');
+      onSubmit(trimmedName);
     }
   };
 
@@ -55,10 +63,18 @@ const OutreachNameInputScreen: React.FC<OutreachNameInputScreenProps> = ({ teamT
           <input 
             type="text" 
             value={name} 
-            onChange={e => setName(e.target.value)} 
+            onChange={e => {
+              setName(e.target.value);
+              setError('');
+            }} 
             placeholder="이름 입력"
             className="w-full bg-white text-gray-900 py-4 px-6 rounded-none border border-gray-200 text-center text-lg outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
           />
+          {error && (
+            <div className="text-red-400 text-sm font-medium -mt-2">
+              {error}
+            </div>
+          )}
           
           <button 
             type="submit"

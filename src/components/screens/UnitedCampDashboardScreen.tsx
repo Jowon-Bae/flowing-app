@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import { TEAM_MEMBERS } from '../../data/teamMembers';
 
 interface UnitedCampDashboardScreenProps {
   teamType: 'outreach' | 'intercessory';
@@ -15,31 +16,6 @@ interface PrayerRecord {
 }
 
 const TOTAL_GOAL_MINUTES = 27000; // From United Camp (90 teachers * 30 days * 10 mins)
-
-const TEAM_MEMBERS = [
-  '배주원', '이지은', '배이안',
-  '김승준', '김규도',
-  '이성재', '이정안',
-  '지석민', '정지혜', '지윤호', '지윤나',
-  '조성국', '임지영', '조수빈', '조수영',
-  '조재범', '한가영', '조제인', '조제니',
-  '심지영', '김기천', '김아인', '김이안',
-  '최인', '이미리',
-  '김사무엘', '이미영', '김희상',
-  '백산', '백민경', '백하루', '백하율', '백하임',
-  '김의태', '김길문',
-  '박상욱', '권성희', '박주아', '박세아',
-  '송나래', '김석', '김율',
-  '김진수', '유재경', '김차율',
-  '정진아', '김루카스', '김재스퍼',
-  '김민우', '김도윤',
-  '박규태', '김도희',
-  '유원상', '박현경', '유예리',
-  '허시원', '허예담',
-  '안지원', '송유섭', '전영지', '신종원', '신대환',
-  '김요한', '장한울', '오준호', '조성수', '김기환',
-  '천에녹', '양승호', '서민경'
-];
 
 const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ teamType }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
