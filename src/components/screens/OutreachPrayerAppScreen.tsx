@@ -52,7 +52,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
     if (isSaving) return;
     setIsSaving(true);
     try {
-      const duration = selectedDuration - timer; // time spent praying
+      const duration = (timer === selectedDuration) ? selectedDuration : (selectedDuration - timer);
       const dateKey = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
       
       await addDoc(collection(db, 'flowing_prayers'), {

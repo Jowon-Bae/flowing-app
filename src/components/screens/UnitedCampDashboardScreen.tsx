@@ -128,9 +128,13 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
           </div>
           <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
             {TEAM_MEMBERS.map((member, index) => {
-              const hasPrayed = records.some(r => r.name === member);
+              const memberRecords = records.filter(r => r.name === member);
+              const hasPrayed = memberRecords.length > 0;
+              const totalSeconds = memberRecords.reduce((sum, r) => sum + (r.duration || 0), 0);
+              const minutes = Math.max(1, Math.round(totalSeconds / 60));
+
               return (
-                <div key={`${member}-${index}`} className="flex flex-col items-center gap-1.5 p-2 bg-gray-50 rounded-xl">
+                <div key={`${member}-${index}`} className="flex flex-col items-center gap-1 p-2 bg-gray-50 rounded-xl">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm transition-all ${
                     hasPrayed 
                       ? 'bg-gradient-to-br from-primary-600 to-primary-400 text-white border-2 border-primary-200' 
@@ -138,9 +142,14 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
                   }`}>
                     {member.charAt(0)}
                   </div>
-                  <div className={`text-[12px] truncate w-full text-center ${hasPrayed ? 'font-bold text-gray-800' : 'font-medium text-gray-400'}`}>
+                  <div className={`text-[12px] truncate w-full text-center mt-0.5 ${hasPrayed ? 'font-bold text-gray-800' : 'font-medium text-gray-400'}`}>
                     {member}
                   </div>
+                  {hasPrayed && (
+                    <div className="text-[10px] font-bold text-primary-600 -mt-0.5">
+                      {minutes}분
+                    </div>
+                  )}
                 </div>
               );
             })}
