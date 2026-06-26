@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, BookOpen, Newspaper, Heart } from 'lucide-react';
+import { Home, Calendar, BookOpen, Newspaper, Heart } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import SplashScreen from './components/screens/SplashScreen';
 import OnboardingScreen from './components/screens/OnboardingScreen';
+import HomeScreen from './components/screens/HomeScreen';
 import MinistryScreen from './components/screens/MinistryScreen';
 import MinistryContentScreen from './components/screens/MinistryContentScreen';
 import NewsScreen from './components/screens/NewsScreen';
@@ -17,9 +18,10 @@ import { PrayerProvider } from './context/PrayerContext';
 import { NewsProvider } from './context/NewsContext';
 import { MinistryPhotoProvider } from './context/MinistryPhotoContext';
 
-type Tab = 'schedule' | 'ministry-content' | 'news' | 'prayer';
+type Tab = 'home' | 'schedule' | 'ministry-content' | 'news' | 'prayer';
 
 const mainTabs: { id: Tab; label: string; icon: React.FC<any> }[] = [
+  { id: 'home',             label: '홈',      icon: Home },
   { id: 'schedule',         label: '사역 일정', icon: Calendar },
   { id: 'ministry-content', label: '사역 내용', icon: BookOpen },
   { id: 'news',             label: '현장 소식', icon: Newspaper },
@@ -31,7 +33,7 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [teamSelected, setTeamSelected] = useState<'outreach' | 'intercessory' | null>(null);
   const [outreachName, setOutreachName] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>('schedule');
+  const [activeTab, setActiveTab] = useState<Tab>('home');
   const audioRef = React.useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -141,6 +143,7 @@ function App() {
                     onTouchEnd={onTouchEndEvent}
                   >
                     <AnimatePresence mode="wait">
+                      {activeTab === 'home' && <HomeScreen key="home" onOpenAdmin={() => {}} isActive={activeTab === 'home'} />}
                       {activeTab === 'schedule' && <MinistryScreen key="schedule" />}
                       {activeTab === 'ministry-content' && <MinistryContentScreen key="ministry-content" />}
                       {activeTab === 'news' && <NewsScreen key="news" isAdmin={false} />}
