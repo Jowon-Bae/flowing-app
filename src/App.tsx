@@ -32,7 +32,7 @@ const mainTabs: { id: Tab; label: string; icon: React.FC<any> }[] = [
 function App() {
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(true);
-  const [teamSelected, setTeamSelected] = useState<'outreach' | 'intercessory' | null>(() => localStorage.getItem('flowing_team') as any || null);
+  const [teamSelected, setTeamSelected] = useState<'outreach' | 'intercessory' | null>(null);
   const [outreachName, setOutreachName] = useState<string | null>(() => localStorage.getItem('flowing_outreach_name') || null);
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [isAdmin, setIsAdmin] = useState(false);
@@ -55,7 +55,6 @@ function App() {
 
   const handleSelectTeam = (team: 'outreach' | 'intercessory') => {
     setTeamSelected(team);
-    localStorage.setItem('flowing_team', team);
   };
 
   const handleNameSubmit = (name: string) => {
@@ -65,7 +64,6 @@ function App() {
 
   const handleResetTeam = () => {
     setTeamSelected(null);
-    localStorage.removeItem('flowing_team');
   };
 
   // Auto-switch between BGM and home video based on active tab
