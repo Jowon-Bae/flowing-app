@@ -7,21 +7,26 @@ interface TeamSelectionScreenProps {
 
 const TeamSelectionScreen: React.FC<TeamSelectionScreenProps> = ({ onSelectTeam }) => {
   return (
-    <div className="absolute inset-0 bg-gray-50 z-40 flex flex-col items-center justify-center p-6 min-h-[100dvh]">
+    <div 
+      className="absolute inset-0 z-40 flex flex-col items-center justify-center p-6 min-h-[100dvh] bg-cover bg-center"
+      style={{ backgroundImage: `url(${import.meta.env.BASE_URL}team_selection_bg.jpg)` }}
+    >
+      <div className="absolute inset-0 bg-black/20"></div>
+      
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm text-center mb-10"
+        className="w-full max-w-sm text-center mb-10 relative z-10"
       >
         <img 
-          src={`${import.meta.env.BASE_URL}load_logo_black.png`} 
+          src={`${import.meta.env.BASE_URL}load_logo.png`} 
           alt="Seoul Dream Church Logo" 
           className="w-16 h-16 rounded-2xl mx-auto mb-6 drop-shadow-sm object-contain"
         />
-        <h1 className="text-2xl font-bold text-gray-900 mb-3 leading-snug">
+        <h1 className="text-2xl font-bold text-white mb-3 leading-snug drop-shadow-md">
           필리핀 아웃리치<br />중보기도 APP
         </h1>
-        <p className="text-gray-500 text-sm leading-relaxed">
+        <p className="text-white/80 text-sm leading-relaxed">
           어떤 팀으로 사역하시나요?<br/>
           팀을 선택해 주세요.
         </p>
@@ -31,7 +36,7 @@ const TeamSelectionScreen: React.FC<TeamSelectionScreenProps> = ({ onSelectTeam 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="w-full max-w-sm flex flex-col gap-4"
+        className="w-full max-w-sm flex flex-col gap-4 relative z-10"
       >
         <button 
           onClick={() => onSelectTeam('outreach')}
