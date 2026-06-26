@@ -18,7 +18,9 @@ const TeamSelectionScreen: React.FC<TeamSelectionScreenProps> = ({ onSelectTeam 
           alt="Seoul Dream Church Logo" 
           className="w-16 h-16 rounded-2xl mx-auto mb-6 drop-shadow-sm object-contain"
         />
-        <h1 className="text-2xl font-bold text-gray-900 mb-3">환영합니다</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-3 leading-snug">
+          필리핀 아웃리치<br />중보기도 APP
+        </h1>
         <p className="text-gray-500 text-sm leading-relaxed">
           어떤 팀으로 사역하시나요?<br/>
           팀을 선택해 주세요.
@@ -35,14 +37,14 @@ const TeamSelectionScreen: React.FC<TeamSelectionScreenProps> = ({ onSelectTeam 
           onClick={() => onSelectTeam('intercessory')}
           className="w-full bg-white text-gray-900 py-4 px-6 rounded-2xl font-bold text-lg shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition-colors"
         >
-          🙏 중보기도 팀
+          Send 중보기도 팀
         </button>
         
         <button 
           onClick={() => onSelectTeam('outreach')}
           className="w-full bg-primary-50 text-primary-700 py-4 px-6 rounded-2xl font-bold text-lg border border-primary-200 flex items-center justify-center hover:bg-primary-100 transition-colors"
         >
-          ✈️ 아웃리치 팀
+          Go 아웃리치 팀
         </button>
       </motion.div>
     </div>
