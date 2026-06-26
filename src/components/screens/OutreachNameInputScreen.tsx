@@ -16,7 +16,7 @@ const OutreachNameInputScreen: React.FC<OutreachNameInputScreenProps> = ({ teamT
     e.preventDefault();
     if (name.trim()) {
       const trimmedName = name.trim();
-      if (teamType === 'intercessory' && !TEAM_MEMBERS.includes(trimmedName)) {
+      if (!TEAM_MEMBERS.includes(trimmedName)) {
         setError('명단에 등록되지 않은 이름입니다. 다시 확인해주세요.');
         return;
       }
