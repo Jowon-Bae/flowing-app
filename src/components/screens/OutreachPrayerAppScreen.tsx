@@ -23,8 +23,8 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
   const currentTopic = PRAYER_TOPICS[dayIndex];
   const dateStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
 
-  const [selectedDuration, setSelectedDuration] = useState(600);
-  const [timer, setTimer] = useState(600);
+  const [selectedDuration, setSelectedDuration] = useState(540);
+  const [timer, setTimer] = useState(540);
   const [isRunning, setIsRunning] = useState(false);
   const [note, setNote] = useState('');
   const [completed, setCompleted] = useState(false);
@@ -181,7 +181,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
             70명 × 30일 × 10분 = <span className="text-primary-600 font-bold">21,000분</span>의 기도
           </p>
           <div className="bg-primary-50 text-primary-700 text-[13px] font-bold py-2 px-4 rounded-full inline-block tracking-tight">
-            오늘 당신의 10분이 아웃리치를 바꿉니다 🚀
+            오늘 당신의 기도가 아웃리치를 바꿉니다 🚀
           </div>
         </motion.div>
 
@@ -197,7 +197,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
           </div>
           
           <div className="flex justify-center gap-2 mb-6">
-            {[10, 30, 60].map(min => (
+            {[9, 15, 20].map(min => (
               <button
                 key={min}
                 onClick={() => handleDurationChange(min)}
