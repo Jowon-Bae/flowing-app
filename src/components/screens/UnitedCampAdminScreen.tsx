@@ -82,7 +82,7 @@ const UnitedCampAdminScreen: React.FC<UnitedCampAdminScreenProps> = ({ teamType,
           animate={{ scale: 1, opacity: 1 }}
           className="bg-gray-900 border border-primary-500/30 rounded-[20px] p-8 w-full max-w-sm text-center shadow-2xl"
         >
-          <div className="text-xl font-extrabold text-white mb-2">🔐 관리자 확인</div>
+          <div className="text-xl font-extrabold text-white mb-2">관리자 확인</div>
           <div className="text-[14px] text-gray-400 mb-6">관리자 비밀번호를 입력해주세요</div>
           
           <input 
@@ -118,7 +118,7 @@ const UnitedCampAdminScreen: React.FC<UnitedCampAdminScreenProps> = ({ teamType,
   return (
     <div className="min-h-full pb-20 bg-gray-50 text-gray-900 overflow-y-auto no-scrollbar">
       <div className="bg-white px-6 py-5 shadow-sm sticky top-0 z-20 flex justify-between items-center">
-        <div className="text-xl font-bold text-gray-800">⚙️ 관리자</div>
+        <div className="text-xl font-bold text-gray-800">관리자</div>
         <button onClick={() => setIsAuthenticated(false)} className="text-sm font-bold text-gray-400 hover:text-gray-600">
           ← 나가기
         </button>
@@ -126,7 +126,7 @@ const UnitedCampAdminScreen: React.FC<UnitedCampAdminScreenProps> = ({ teamType,
 
       <div className="p-6">
         <div className="bg-white border border-gray-100 rounded-[16px] p-5 shadow-sm">
-          <div className="text-[15px] font-bold text-gray-800 mb-4">📖 전체 기도 기록 관리 ({records.length}건)</div>
+          <div className="text-[15px] font-bold text-gray-800 mb-4">전체 기도 기록 관리 ({records.length}건)</div>
           
           {loading ? (
             <div className="text-center py-10 text-gray-400 font-medium">데이터를 불러오는 중...</div>

@@ -85,7 +85,7 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
   return (
     <div className="absolute inset-0 h-full pb-20 bg-gray-50 text-gray-900 overflow-y-auto no-scrollbar">
       <div className="bg-white px-6 py-5 shadow-sm sticky top-0 z-20 flex justify-between items-center">
-        <div className="text-xl font-bold text-gray-800">📊 기도 현황</div>
+        <div className="text-xl font-bold text-gray-800">기도 현황</div>
       </div>
 
       <div className="p-6">
@@ -98,7 +98,7 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
 
         {/* Notes */}
         <div className="bg-gradient-to-br from-primary-50 to-blue-50 border border-primary-100 rounded-[16px] p-5 mb-5 shadow-sm">
-          <div className="text-[14px] font-bold text-primary-800 mb-4">💬 오늘의 기도 한 문장</div>
+          <div className="text-[14px] font-bold text-primary-800 mb-4">오늘의 기도 한 문장</div>
           <div className="flex flex-col gap-3">
             {loading ? (
               <div className="text-sm text-gray-500 text-center py-2">불러오는 중...</div>
@@ -122,7 +122,7 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
 
         {/* Teachers */}
         <div className="bg-white border border-gray-100 rounded-[16px] p-5 mb-5 shadow-sm">
-          <div className="text-[14px] font-bold text-gray-800 mb-2">👩‍🏫 팀원 기도 현황</div>
+          <div className="text-[14px] font-bold text-gray-800 mb-2">팀원 기도 현황</div>
           <div className="text-[13px] text-gray-500 mb-4">
             전체 {TEAM_MEMBERS.length}명 중 <span className="font-bold text-primary-600">{records.length}명</span>이 기도에 동참했습니다.
           </div>
@@ -157,7 +157,7 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
         </div>
 
         {/* Stats */}
-        <div className="text-[14px] font-bold text-gray-800 mb-4 mt-8">⏱ 기도 시간 통계</div>
+        <div className="text-[14px] font-bold text-gray-800 mb-4 mt-8">기도 시간 통계</div>
         <div className="flex gap-4 mb-6">
           <div className="flex-1 bg-white border border-gray-100 rounded-[16px] p-5 shadow-sm text-center">
             <div className="text-2xl font-extrabold text-primary-600 mb-1">{myMinutes}<span className="text-sm font-medium text-gray-500 ml-1">분</span></div>
@@ -171,7 +171,7 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
 
         {/* Thermometer */}
         <div className="bg-white border border-gray-100 rounded-[16px] p-6 shadow-sm mb-6 relative overflow-hidden backdrop-blur-md">
-          <div className="text-[14px] font-bold text-gray-500 mb-6 text-center tracking-wide">🔥 기도 온도계</div>
+          <div className="text-[14px] font-bold text-gray-500 mb-6 text-center tracking-wide">기도 온도계</div>
           <div className="flex items-center justify-center gap-8">
             {/* Thermo tube */}
             <div className="relative w-12 h-40">
