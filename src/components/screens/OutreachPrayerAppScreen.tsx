@@ -266,7 +266,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
           </div>
           
           <div className="flex justify-center gap-2 mb-6">
-            {[9, 15, 20].map(min => (
+            {[9].map(min => (
               <button
                 key={min}
                 onClick={() => handleDurationChange(min)}
