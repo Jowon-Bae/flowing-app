@@ -83,7 +83,7 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
   const pct = Math.min(Math.round((totalMinutes / TOTAL_GOAL_MINUTES) * 100), 100);
 
   return (
-    <div className="min-h-full pb-20 bg-gray-50 text-gray-900 overflow-y-auto no-scrollbar">
+    <div className="absolute inset-0 h-full pb-20 bg-gray-50 text-gray-900 overflow-y-auto no-scrollbar">
       <div className="bg-white px-6 py-5 shadow-sm sticky top-0 z-20 flex justify-between items-center">
         <div className="text-xl font-bold text-gray-800">📊 기도 현황</div>
       </div>
