@@ -178,7 +178,7 @@ const OutreachPrayerAppScreen: React.FC<OutreachPrayerAppScreenProps> = ({ teamT
             여러분들의 기도가 쌓여<br />은혜로운 아웃리치를 만듭니다
           </h3>
           <p className="text-gray-500 text-[13px] font-medium mb-4">
-            70명 × 30일 × 10분 = <span className="text-primary-600 font-bold">21,000분</span>의 기도
+            70명 × 30일 × 9분 = <span className="text-primary-600 font-bold">18,900분</span>의 기도
           </p>
           <div className="bg-primary-50 text-primary-700 text-[13px] font-bold py-2 px-4 rounded-full inline-block tracking-tight">
             오늘 당신의 기도가 아웃리치를 바꿉니다 🚀
