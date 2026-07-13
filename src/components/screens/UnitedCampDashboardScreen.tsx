@@ -5,6 +5,7 @@ import { TEAM_MEMBERS } from '../../data/teamMembers';
 
 interface UnitedCampDashboardScreenProps {
   teamType: 'outreach' | 'intercessory';
+  name: string;
 }
 
 interface PrayerRecord {
@@ -17,15 +18,12 @@ interface PrayerRecord {
 
 const TOTAL_GOAL_MINUTES = 18900; // From United Camp (70 teachers * 30 days * 9 mins)
 
-const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ teamType }) => {
+const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ teamType, name }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [records, setRecords] = useState<PrayerRecord[]>([]);
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [myMinutes, setMyMinutes] = useState(0); 
   const [loading, setLoading] = useState(true);
-
-  // Use localStorage to match name for "my minutes"
-  const storedName = localStorage.getItem('flowing_outreach_name') || '';
 
   const dateStr = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
   const displayDate = `${currentDate.getMonth() + 1}월 ${currentDate.getDate()}일`;
@@ -58,7 +56,7 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
         totalSnap.forEach(doc => {
           const data = doc.data();
           totalSec += data.duration || 0;
-          if (data.name === storedName) {
+          if (data.name === name) {
             mySec += data.duration || 0;
           }
         });
@@ -72,7 +70,7 @@ const UnitedCampDashboardScreen: React.FC<UnitedCampDashboardScreenProps> = ({ t
     };
 
     fetchRecords();
-  }, [dateStr, teamType, storedName]);
+  }, [dateStr, teamType, name]);
 
   const changeDate = (days: number) => {
     const newDate = new Date(currentDate);

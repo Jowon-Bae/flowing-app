@@ -18,7 +18,7 @@ const UnitedCampAppLayout: React.FC<UnitedCampAppLayoutProps> = ({ teamType, nam
     <div className="flex flex-col h-[100dvh] bg-gray-50 relative overflow-hidden">
       <div className="flex-1 w-full h-full relative">
         {activeTab === 'prayer' && <OutreachPrayerAppScreen teamType={teamType} name={name} onBack={onBack} />}
-        {activeTab === 'dashboard' && <UnitedCampDashboardScreen teamType={teamType} />}
+        {activeTab === 'dashboard' && <UnitedCampDashboardScreen teamType={teamType} name={name} />}
         {activeTab === 'admin' && <UnitedCampAdminScreen teamType={teamType} onBack={onBack} />}
       </div>
 
